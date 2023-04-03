@@ -1,23 +1,24 @@
-import React from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-//import styles from './MapContainer.css';
+import React, { useMemo } from 'react';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import NavigationPanel from './NavigationPanel';
 
-const containerStyle = {
-    width: '100%',
-    height: '100%',
-};
+function MapContainer() {
+    const center = useMemo(() => ({ lat: 51.504171, lng: -2.549914 }), []);
 
-const center = {
-    lat: -34.397,
-    lng: 150.644,
-};
+    const mapContainerStyle = {
+        width: '100%',
+        height: '98vh',
+        position: 'relative',
+    };
 
-const MapContainer = () => {
     return (
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}></GoogleMap>
-        </LoadScript>
+        <>
+            <NavigationPanel />
+            <GoogleMap zoom={15} center={center} mapContainerStyle={mapContainerStyle}>
+                <Marker position={{ lat: 51.504171, lng: -2.549914 }} />
+            </GoogleMap>
+        </>
     );
-};
+}
 
 export default MapContainer;
