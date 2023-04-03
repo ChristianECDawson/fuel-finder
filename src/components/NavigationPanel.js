@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     AppBar,
     Toolbar,
@@ -12,6 +12,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import StationList from './StationList';
+import { geocodeAddress } from '../api'; // Import the geocodeAddress function
 
 const useStyles = makeStyles({
     appBar: {
@@ -31,8 +32,21 @@ const useStyles = makeStyles({
 
 const NavigationPanel = () => {
     const [location, setLocation] = useState('');
+    const [locationCoords, setLocationCoords] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const classes = useStyles();
+
+    useEffect(() => {
+        if (location) {
+            geocodeAddress(location)
+                .then((coords) => {
+                    setLocationCoords(coords);
+                })
+                .catch((error) => {
+                    console.error('Error geocoding address:', error);
+                });
+        }
+    }, [location]);
 
     const handleLocationChange = (event) => {
         setLocation(event.target.value);
@@ -68,7 +82,7 @@ const NavigationPanel = () => {
                         />
                     </Box>
                     <Divider />
-                    <StationList location={location} />
+                    <StationList location={locationCoords} />
                 </Box>
             </Drawer>
         </>

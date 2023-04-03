@@ -1,52 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import FuelStationCard from './FuelStationCard';
-
-const mockStations = [
-    {
-        id: 1,
-        name: 'Tesco Extra Filton',
-        address: 'Filton Abbey Wood Retail Park, Filton, Bristol BS34 7JL',
-        latitude: 51.516018,
-        longitude: -2.549258,
-        gasPrice: 1.39,
-        dieselPrice: 1.43,
-    },
-    {
-        id: 2,
-        name: 'Sainsbury’s Filton',
-        address: 'Fox Den Rd, Stoke Gifford, Bristol BS34 8SS',
-        latitude: 51.507031,
-        longitude: -2.548174,
-        gasPrice: 1.41,
-        dieselPrice: 1.45,
-    },
-    {
-        id: 3,
-        name: 'Shell Filton',
-        address: 'Gloucester Rd N, Filton, Bristol BS34 7BP',
-        latitude: 51.510515,
-        longitude: -2.567243,
-        gasPrice: 1.44,
-        dieselPrice: 1.48,
-    },
-    {
-        id: 4,
-        name: 'BP Filton',
-        address: 'Filton Service Station, Filton, Bristol BS34 7QS',
-        latitude: 51.508392,
-        longitude: -2.573283,
-        gasPrice: 1.42,
-        dieselPrice: 1.46,
-    },
-];
+import { fetchNearbyFuelStations } from '../api'; // Import the function
 
 const StationList = ({ location }) => {
     const [stations, setStations] = useState([]);
 
     useEffect(() => {
         if (location) {
-            // Replace this with a call to an API to fetch real data based on the user's location
-            setStations(mockStations);
+            // Call the fetchNearbyFuelStations function with the location's latitude and longitude
+            fetchNearbyFuelStations(location.lat, location.lng)
+                .then((results) => {
+                    // Transform the results into the format used by FuelStationCard
+                    const transformedResults = results.map((result) => ({
+                        id: result.place_id,
+                        name: result.name,
+                        address: result.vicinity,
+                        latitude: result.geometry.location.lat,
+                        longitude: result.geometry.location.lng,
+                        // Mock gas and diesel prices since they're not provided by the API
+                        gasPrice: parseFloat((Math.random() * (1.5 - 1.2) + 1.2).toFixed(2)),
+                        dieselPrice: parseFloat((Math.random() * (1.7 - 1.4) + 1.4).toFixed(2)),
+                    }));
+
+                    setStations(transformedResults);
+                })
+                .catch((error) => {
+                    console.error('Error fetching fuel stations:', error);
+                });
         }
     }, [location]);
 
@@ -59,5 +39,4 @@ const StationList = ({ location }) => {
     );
 };
 
-export { mockStations };
 export default StationList;
