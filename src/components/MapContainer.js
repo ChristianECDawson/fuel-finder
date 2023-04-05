@@ -37,15 +37,20 @@ function MapContainer() {
     }, [userLocation]);
 
     const renderMarkers = () => {
-        return stations.map((station) => (
-            <Marker
-                key={station.place_id}
-                position={{
-                    lat: station.geometry.location.lat(),
-                    lng: station.geometry.location.lng(),
-                }}
-            />
-        ));
+        if (Array.isArray(stations)) {
+            return stations.map((station) => (
+                <Marker
+                    key={station.place_id}
+                    position={{
+                        lat: station.geometry.location.lat(),
+                        lng: station.geometry.location.lng(),
+                    }}
+                />
+            ));
+        } else {
+            console.error('stations is not an array:', stations);
+            return null;
+        }
     };
 
     return (

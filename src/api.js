@@ -1,22 +1,13 @@
-import { Client } from '@googlemaps/google-maps-services-js';
-
-const client = new Client({});
+import axios from 'axios';
 
 export async function fetchNearbyFuelStations(latitude, longitude) {
     try {
-        const response = await client.placesNearby({
-            params: {
-                key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-                location: `${latitude},${longitude}`,
-                radius: 5000, // Search within a 5 km radius
-                type: 'gas_station', // Search for gas stations
-            },
-        });
+        const response = await axios.get(`/api/fuelstations?lat=${latitude}&lng=${longitude}`);
 
-        if (response.data.status === 'OK') {
-            return response.data.results;
+        if (response.status === 200) {
+            return response.data;
         } else {
-            throw new Error(`Error fetching fuel stations: ${response.data.status}`);
+            throw new Error(`Error fetching fuel stations: ${response.status}`);
         }
     } catch (error) {
         console.error('Error fetching nearby fuel stations:', error);
@@ -26,12 +17,9 @@ export async function fetchNearbyFuelStations(latitude, longitude) {
 
 export async function geocodeAddress(address) {
     try {
-        const response = await client.geocode({
-            params: {
-                key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-                address: address,
-            },
-        });
+        const response = await axios.get(
+            `/maps/api/geocode/json?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&address=${encodeURIComponent(address)}`
+        );
 
         if (response.data.status === 'OK') {
             return response.data.results[0].geometry.location;
@@ -43,4 +31,3 @@ export async function geocodeAddress(address) {
         return null;
     }
 }
-
