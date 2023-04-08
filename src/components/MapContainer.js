@@ -10,7 +10,7 @@ function MapContainer() {
 
     const mapContainerStyle = {
         width: '100%',
-        height: '98vh',
+        height: 'calc(100vh - 64px)',
         position: 'relative',
     };
 
@@ -28,7 +28,7 @@ function MapContainer() {
         if (userLocation) {
             fetchNearbyFuelStations(userLocation.lat, userLocation.lng)
                 .then((results) => {
-                    setStations(results);
+                    setStations(results.results);
                 })
                 .catch((error) => {
                     console.error('Error fetching fuel stations:', error);
@@ -42,8 +42,8 @@ function MapContainer() {
                 <Marker
                     key={station.place_id}
                     position={{
-                        lat: station.geometry.location.lat(),
-                        lng: station.geometry.location.lng(),
+                        lat: station.geometry.location.lat,
+                        lng: station.geometry.location.lng,
                     }}
                 />
             ));
