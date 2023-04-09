@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     AppBar,
     Toolbar,
     Typography,
     Box,
-    TextField,
     Divider,
     Drawer,
     IconButton,
+    Grid,
+    FormControl,
+    InputLabel,
+    OutlinedInput,
+    Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import StationList from './StationList';
 import { geocodeAddress } from '../api'; // Import the geocodeAddress function
+import { useLoadScript } from '@react-google-maps/api';
+import { Autocomplete, LoadScript } from '@react-google-maps/api';
 
 const useStyles = makeStyles({
     appBar: {
@@ -30,23 +36,16 @@ const useStyles = makeStyles({
     },
 });
 
-const NavigationPanel = () => {
+const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) => {
+    const classes = useStyles();
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    });
     const [location, setLocation] = useState('');
     const [locationCoords, setLocationCoords] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const classes = useStyles();
-
-    useEffect(() => {
-        if (location) {
-            geocodeAddress(location)
-                .then((coords) => {
-                    setLocationCoords(coords);
-                })
-                .catch((error) => {
-                    console.error('Error geocoding address:', error);
-                });
-        }
-    }, [location]);
+    const [radius, setRadius] = useState(5000);
+    const autoCompleteRef = useRef(null);
 
     const handleLocationChange = (event) => {
         setLocation(event.target.value);
@@ -54,6 +53,19 @@ const NavigationPanel = () => {
 
     const toggleDrawer = (open) => (event) => {
         setDrawerOpen(open);
+    };
+
+    const handleRadiusChange = (event) => {
+        setRadius(event.target.value);
+    };
+
+    const onPlaceChanged = () => {
+        const place = autoCompleteRef.current.getPlace();
+        setLocation(place.formatted_address);
+        setLocationCoords({
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+        });
     };
 
     return (
@@ -74,15 +86,58 @@ const NavigationPanel = () => {
             <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
                 <Box className={classes.drawer} role="presentation">
                     <Box m={2}>
-                        <TextField
-                            label="Enter your location"
-                            fullWidth
-                            value={location}
-                            onChange={handleLocationChange}
-                        />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                {isLoaded ? (
+                                    <Autocomplete
+                                        onLoad={(autoC) => {
+                                            autoCompleteRef.current = autoC;
+                                        }}
+                                        onPlaceChanged={onPlaceChanged}
+                                    >
+                                        <FormControl fullWidth variant="outlined">
+                                            <InputLabel htmlFor="location-input">Enter your location</InputLabel>
+                                            <OutlinedInput
+                                                id="location-input"
+                                                label="Enter your location"
+                                                fullWidth
+                                                value={location}
+                                                onChange={handleLocationChange}
+                                            />
+                                        </FormControl>
+                                    </Autocomplete>
+                                ) : (
+                                    <div>Loading...</div>
+                                )}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel htmlFor="radius-input">Radius (meters)</InputLabel>
+                                    <OutlinedInput
+                                        id="radius-input"
+                                        label="Radius (meters)"
+                                        fullWidth
+                                        type="number"
+                                        inputProps={{ min: 1, max: 50000 }}
+                                        value={radius}
+                                        onChange={handleRadiusChange}
+                                    />
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    fullWidth
+                                    onClick={() => onSearchUpdate(locationCoords, radius)}
+                                >
+                                    Update Search
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Box>
                     <Divider />
-                    <StationList location={locationCoords} />
+                    <StationList location={locationCoords} radius={radius} />
                 </Box>
             </Drawer>
         </>

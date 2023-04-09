@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import FuelStationCard from './FuelStationCard';
 import { fetchNearbyFuelStations } from '../api'; // Import the function
 
-const StationList = ({ location }) => {
+const StationList = ({ location, radius, onSearchUpdate }) => {
     const [stations, setStations] = useState([]);
 
     useEffect(() => {
-        if (location) {
+        if (location && radius) {
             // Call the fetchNearbyFuelStations function with the location's latitude and longitude
-            fetchNearbyFuelStations(location.lat, location.lng)
+            fetchNearbyFuelStations(location.lat, location.lng, radius)
                 .then((results) => {
                     // Transform the results into the format used by FuelStationCard
                     const transformedResults = results.map((result) => ({
@@ -23,12 +23,13 @@ const StationList = ({ location }) => {
                     }));
 
                     setStations(transformedResults);
+                    onSearchUpdate(transformedResults);
                 })
                 .catch((error) => {
                     console.error('Error fetching fuel stations:', error);
                 });
         }
-    }, [location]);
+    }, [location, radius, onSearchUpdate]);
 
     return (
         <div>

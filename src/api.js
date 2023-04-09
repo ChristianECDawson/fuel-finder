@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-export async function fetchNearbyFuelStations(latitude, longitude) {
+export async function fetchNearbyFuelStations(latitude, longitude, radius) {
     try {
-        const response = await axios.get(`/api/fuelstations?lat=${latitude}&lng=${longitude}`);
+        const response = await axios.get(`/api/fuelstations?lat=${latitude}&lng=${longitude}&radius=${radius}`);
 
         if (response.status === 200) {
             return response.data;

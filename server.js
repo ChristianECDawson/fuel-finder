@@ -8,9 +8,9 @@ app.use(cors());
 
 // Fetch nearby fuel stations
 async function fetchNearbyFuelStations(req, res) {
-    const { lat, lng } = req.query;
+    const { lat, lng, radius } = req.query;
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&type=gas_station&key=${apiKey}`;
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=gas_station&key=${apiKey}`;
 
     try {
         const response = await axios.get(url);

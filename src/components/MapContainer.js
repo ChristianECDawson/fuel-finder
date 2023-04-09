@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle } from '@react-google-maps/api';
 import NavigationPanel from './NavigationPanel';
 import { geocodeAddress, fetchNearbyFuelStations } from '../api';
 
@@ -7,6 +7,7 @@ function MapContainer() {
     const center = useMemo(() => ({ lat: 51.504171, lng: -2.549914 }), []);
     const [userLocation, setUserLocation] = useState(center);
     const [stations, setStations] = useState([]);
+    const [radius, setRadius] = useState(5);
 
     const mapContainerStyle = {
         width: '100%',
@@ -24,6 +25,10 @@ function MapContainer() {
             });
     };
 
+    const handleSearchUpdate = (newStations) => {
+        setStations(newStations);
+    };
+
     useEffect(() => {
         if (userLocation) {
             fetchNearbyFuelStations(userLocation.lat, userLocation.lng)
@@ -34,7 +39,7 @@ function MapContainer() {
                     console.error('Error fetching fuel stations:', error);
                 });
         }
-    }, [userLocation]);
+    }, [userLocation, radius]);
 
     const renderMarkers = () => {
         if (Array.isArray(stations)) {
@@ -53,16 +58,46 @@ function MapContainer() {
         }
     };
 
+    const renderCircle = () => {
+        if (userLocation) {
+            return (
+                <Circle
+                    center={userLocation}
+                    radius={radius * 1000} // Convert radius from kilometers to meters
+                    options={{
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.2,
+                        clickable: false,
+                        draggable: false,
+                        editable: false,
+                        zIndex: 1,
+                    }}
+                />
+            );
+        } else {
+            return null;
+        }
+    };
+
     return (
         <>
-            <NavigationPanel onLocationChange={handleLocationChange} />
+            <NavigationPanel
+                onLocationChange={handleLocationChange}
+                onRadiusChange={setRadius}
+                onSearchUpdate={handleSearchUpdate}
+            />
             <GoogleMap
                 zoom={15}
                 center={userLocation}
                 mapContainerStyle={mapContainerStyle}
             >
                 {renderMarkers()}
+                {renderCircle()}
             </GoogleMap>
+
         </>
     );
 }
