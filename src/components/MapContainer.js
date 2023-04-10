@@ -1,13 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleMap, Marker, Circle } from '@react-google-maps/api';
-import NavigationPanel from './NavigationPanel';
-import { geocodeAddress, fetchNearbyFuelStations } from '../api';
+import { fetchNearbyFuelStations } from '../api';
 
-function MapContainer() {
-    const center = useMemo(() => ({ lat: 51.504171, lng: -2.549914 }), []);
-    const [userLocation, setUserLocation] = useState(center);
+function MapContainer({ userLocation, radius }) {
     const [stations, setStations] = useState([]);
-    const [radius, setRadius] = useState(5);
 
     const mapContainerStyle = {
         width: '100%',
@@ -15,24 +11,11 @@ function MapContainer() {
         position: 'relative',
     };
 
-    const handleLocationChange = (newLocation) => {
-        geocodeAddress(newLocation)
-            .then((coords) => {
-                setUserLocation(coords);
-            })
-            .catch((error) => {
-                console.error('Error geocoding address:', error);
-            });
-    };
-
-    const handleSearchUpdate = (newStations) => {
-        setStations(newStations);
-    };
-
     useEffect(() => {
         if (userLocation) {
-            fetchNearbyFuelStations(userLocation.lat, userLocation.lng)
+            fetchNearbyFuelStations(userLocation.lat, userLocation.lng, 5000)
                 .then((results) => {
+                    console.log('API response:', results);
                     setStations(results.results);
                 })
                 .catch((error) => {
@@ -83,22 +66,10 @@ function MapContainer() {
     };
 
     return (
-        <>
-            <NavigationPanel
-                onLocationChange={handleLocationChange}
-                onRadiusChange={setRadius}
-                onSearchUpdate={handleSearchUpdate}
-            />
-            <GoogleMap
-                zoom={15}
-                center={userLocation}
-                mapContainerStyle={mapContainerStyle}
-            >
-                {renderMarkers()}
-                {renderCircle()}
-            </GoogleMap>
-
-        </>
+        <GoogleMap zoom={15} center={userLocation} mapContainerStyle={mapContainerStyle}>
+            {renderMarkers()}
+            {renderCircle()}
+        </GoogleMap>
     );
 }
 

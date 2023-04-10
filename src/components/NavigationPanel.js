@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     AppBar,
     Toolbar,
@@ -16,9 +16,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import StationList from './StationList';
-import { geocodeAddress } from '../api'; // Import the geocodeAddress function
-import { useLoadScript } from '@react-google-maps/api';
-import { Autocomplete, LoadScript } from '@react-google-maps/api';
+import { geocodeAddress } from '../api';
+import { Autocomplete } from '@react-google-maps/api';
 
 const useStyles = makeStyles({
     appBar: {
@@ -38,9 +37,6 @@ const useStyles = makeStyles({
 
 const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) => {
     const classes = useStyles();
-    const { isLoaded } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    });
     const [location, setLocation] = useState('');
     const [locationCoords, setLocationCoords] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -88,27 +84,24 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
                     <Box m={2}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                {isLoaded ? (
-                                    <Autocomplete
-                                        onLoad={(autoC) => {
-                                            autoCompleteRef.current = autoC;
-                                        }}
-                                        onPlaceChanged={onPlaceChanged}
-                                    >
-                                        <FormControl fullWidth variant="outlined">
-                                            <InputLabel htmlFor="location-input">Enter your location</InputLabel>
-                                            <OutlinedInput
-                                                id="location-input"
-                                                label="Enter your location"
-                                                fullWidth
-                                                value={location}
-                                                onChange={handleLocationChange}
-                                            />
-                                        </FormControl>
-                                    </Autocomplete>
-                                ) : (
-                                    <div>Loading...</div>
-                                )}
+                                <Autocomplete
+                                    onLoad={(autoC) => {
+                                        autoCompleteRef.current = autoC
+                                            ;
+                                    }}
+                                    onPlaceChanged={onPlaceChanged}
+                                >
+                                    <FormControl fullWidth variant="outlined">
+                                        <InputLabel htmlFor="location-input">Enter your location</InputLabel>
+                                        <OutlinedInput
+                                            id="location-input"
+                                            label="Enter your location"
+                                            fullWidth
+                                            value={location}
+                                            onChange={handleLocationChange}
+                                        />
+                                    </FormControl>
+                                </Autocomplete>
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl fullWidth variant="outlined">
