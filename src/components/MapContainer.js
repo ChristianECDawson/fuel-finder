@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, Marker, Circle } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { fetchNearbyFuelStations } from '../api';
 
 function MapContainer({ userLocation, radius }) {
     const [stations, setStations] = useState([]);
+    const [selectedStation, setSelectedStation] = useState(null);
 
     const mapContainerStyle = {
         width: '100%',
@@ -13,7 +14,7 @@ function MapContainer({ userLocation, radius }) {
 
     useEffect(() => {
         if (userLocation) {
-            fetchNearbyFuelStations(userLocation.lat, userLocation.lng, 5000)
+            fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius * 1000)
                 .then((results) => {
                     console.log('API response:', results);
                     setStations(results.results);
@@ -32,6 +33,9 @@ function MapContainer({ userLocation, radius }) {
                     position={{
                         lat: station.geometry.location.lat,
                         lng: station.geometry.location.lng,
+                    }}
+                    onClick={() => {
+                        setSelectedStation(station);
                     }}
                 />
             ));
@@ -65,10 +69,35 @@ function MapContainer({ userLocation, radius }) {
         }
     };
 
+    const renderInfoWindow = () => {
+        if (selectedStation) {
+            return (
+                <InfoWindow
+                    position={{
+                        lat: selectedStation.geometry.location.lat,
+                        lng: selectedStation.geometry.location.lng,
+                    }}
+                    onCloseClick={() => {
+                        setSelectedStation(null);
+                    }}
+                >
+                    <div>
+                        <h3>{selectedStation.name}</h3>
+                        <p>Address: {selectedStation.vicinity}</p>
+                        {/* Add additional information here */}
+                    </div>
+                </InfoWindow>
+            );
+        } else {
+            return null;
+        }
+    };
+
     return (
         <GoogleMap zoom={15} center={userLocation} mapContainerStyle={mapContainerStyle}>
             {renderMarkers()}
             {renderCircle()}
+            {renderInfoWindow()}
         </GoogleMap>
     );
 }
