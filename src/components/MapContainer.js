@@ -94,7 +94,7 @@ function MapContainer({ userLocation, radius }) {
     };
 
     return (
-        <GoogleMap zoom={15} center={userLocation} mapContainerStyle={mapContainerStyle}>
+        <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle}>
             {renderMarkers()}
             {renderCircle()}
             {renderInfoWindow()}

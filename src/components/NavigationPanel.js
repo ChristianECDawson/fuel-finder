@@ -16,8 +16,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import StationList from './StationList';
-import { geocodeAddress } from '../api';
-import { Autocomplete } from '@react-google-maps/api';
+import LocationAutocomplete from './LocationAutocomplete';
 
 const useStyles = makeStyles({
     appBar: {
@@ -43,8 +42,8 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
     const [radius, setRadius] = useState(5000);
     const autoCompleteRef = useRef(null);
 
-    const handleLocationChange = (event) => {
-        setLocation(event.target.value);
+    const handleLocationChange = (value) => {
+        setLocation(value);
     };
 
     const toggleDrawer = (open) => (event) => {
@@ -57,12 +56,19 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
 
     const onPlaceChanged = () => {
         const place = autoCompleteRef.current.getPlace();
-        setLocation(place.formatted_address);
-        setLocationCoords({
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-        });
+
+        if (place && place.formatted_address) {
+            setLocation(place.formatted_address);
+        }
+
+        if (place && place.geometry && place.geometry.location) {
+            setLocationCoords({
+                lat: place.geometry.location.lat,
+                lng: place.geometry.location.lng,
+            });
+        }
     };
+
 
     return (
         <>
@@ -84,24 +90,11 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
                     <Box m={2}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
-                                <Autocomplete
-                                    onLoad={(autoC) => {
-                                        autoCompleteRef.current = autoC
-                                            ;
-                                    }}
-                                    onPlaceChanged={onPlaceChanged}
-                                >
-                                    <FormControl fullWidth variant="outlined">
-                                        <InputLabel htmlFor="location-input">Enter your location</InputLabel>
-                                        <OutlinedInput
-                                            id="location-input"
-                                            label="Enter your location"
-                                            fullWidth
-                                            value={location}
-                                            onChange={handleLocationChange}
-                                        />
-                                    </FormControl>
-                                </Autocomplete>
+                                <LocationAutocomplete
+                                    location={location}
+                                    handleLocationChange={handleLocationChange}
+                                    setLocationCoords={setLocationCoords}
+                                />
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl fullWidth variant="outlined">

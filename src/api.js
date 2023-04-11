@@ -17,9 +17,7 @@ export async function fetchNearbyFuelStations(latitude, longitude, radius) {
 
 export async function geocodeAddress(address) {
     try {
-        const response = await axios.get(
-            `/maps/api/geocode/json?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&address=${encodeURIComponent(address)}`
-        );
+        const response = await axios.get(`/api/geocode?address=${encodeURIComponent(address)}`);
 
         if (response.data.status === 'OK') {
             return response.data.results[0].geometry.location;
@@ -31,3 +29,4 @@ export async function geocodeAddress(address) {
         return null;
     }
 }
+
