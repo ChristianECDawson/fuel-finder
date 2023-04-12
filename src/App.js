@@ -15,7 +15,7 @@ export default function Home() {
   }; // You can change the coordinates to the desired default location
 
   const [userLocation, setUserLocation] = useState(defaultCenter);
-  const [radius, setRadius] = useState(5);
+  const [radius, setRadius] = useState(5000);
 
   const handleSearchUpdate = (locationCoords, radius) => {
     setUserLocation(locationCoords);

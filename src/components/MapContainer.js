@@ -14,7 +14,7 @@ function MapContainer({ userLocation, radius }) {
 
     useEffect(() => {
         if (userLocation && radius) { // Add a condition to check if radius is also provided
-            fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius * 1000)
+            fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius)
                 .then((results) => {
                     console.log('API response:', results);
                     setStations(results.results);
@@ -50,7 +50,7 @@ function MapContainer({ userLocation, radius }) {
             return (
                 <Circle
                     center={userLocation}
-                    radius={radius * 1000} // Convert radius from kilometers to meters
+                    radius={radius} // Convert radius from kilometers to meters
                     options={{
                         strokeColor: '#FF0000',
                         strokeOpacity: 0.8,

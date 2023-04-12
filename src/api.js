@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export async function fetchNearbyFuelStations(latitude, longitude, radius) {
     try {
+        console.log('fetchNearbyFuelStations params:', latitude, longitude, radius);
         const response = await axios.get(`/api/fuelstations?lat=${latitude}&lng=${longitude}&radius=${radius}`);
 
         if (response.status === 200) {

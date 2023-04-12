@@ -10,6 +10,8 @@ async function fetchNearbyFuelStations(req, res) {
     const { lat, lng, radius } = req.query;
     const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=${radius}&type=gas_station&key=${apiKey}`;
+    console.log('Server received lat, lng, radius:', lat, lng, radius);
+    console.log('Constructed URL:', url);
 
     try {
         const response = await axios.get(url);
