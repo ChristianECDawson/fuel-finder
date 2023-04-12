@@ -13,7 +13,7 @@ function MapContainer({ userLocation, radius }) {
     };
 
     useEffect(() => {
-        if (userLocation) {
+        if (userLocation && radius) { // Add a condition to check if radius is also provided
             fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius * 1000)
                 .then((results) => {
                     console.log('API response:', results);
@@ -23,7 +23,7 @@ function MapContainer({ userLocation, radius }) {
                     console.error('Error fetching fuel stations:', error);
                 });
         }
-    }, [userLocation, radius]);
+    }, [userLocation, radius]); // Add radius to the dependency array
 
     const renderMarkers = () => {
         if (Array.isArray(stations)) {
@@ -94,7 +94,7 @@ function MapContainer({ userLocation, radius }) {
     };
 
     return (
-        <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle}>
+        <GoogleMap zoom={14} center={userLocation} mapContainerStyle={mapContainerStyle}>
             {renderMarkers()}
             {renderCircle()}
             {renderInfoWindow()}
@@ -103,3 +103,4 @@ function MapContainer({ userLocation, radius }) {
 }
 
 export default MapContainer;
+

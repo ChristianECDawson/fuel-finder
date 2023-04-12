@@ -34,13 +34,16 @@ const useStyles = makeStyles({
     },
 });
 
-const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) => {
+const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSearchUpdate }) => {
     const classes = useStyles();
     const [location, setLocation] = useState('');
-    const [locationCoords, setLocationCoords] = useState(null);
+    const [locationCoords, setLocationCoords] = useState(defaultCenter);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [radius, setRadius] = useState(5000);
     const autoCompleteRef = useRef(null);
+
+    // Add this piece of state to store the current search parameters
+    const [currentSearch, setCurrentSearch] = useState({ locationCoords: null, radius: null });
 
     const handleLocationChange = (value) => {
         setLocation(value);
@@ -68,7 +71,6 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
             });
         }
     };
-
 
     return (
         <>
@@ -115,7 +117,10 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
                                     variant="contained"
                                     color="primary"
                                     fullWidth
-                                    onClick={() => onSearchUpdate(locationCoords, radius)}
+                                    onClick={() => {
+                                        onSearchUpdate(locationCoords, radius);
+                                        setCurrentSearch({ locationCoords, radius });
+                                    }}
                                 >
                                     Update Search
                                 </Button>
@@ -131,3 +136,5 @@ const NavigationPanel = ({ onLocationChange, onRadiusChange, onSearchUpdate }) =
 };
 
 export default NavigationPanel;
+
+

@@ -28,6 +28,7 @@ const LocationAutocomplete = ({ location, handleLocationChange, setLocationCoord
             {
                 input: input,
                 types: ['geocode'],
+                componentRestrictions: { country: 'GB' },
                 // Optional: you can include a LatLngBounds object to restrict the search area
                 // bounds: ...
             },

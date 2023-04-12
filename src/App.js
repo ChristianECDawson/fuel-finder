@@ -9,7 +9,12 @@ export default function Home() {
     libraries: ['places'],
   });
 
-  const [userLocation, setUserLocation] = useState({ lat: 51.504171, lng: -2.549914 });
+  const defaultCenter = {
+    lat: 51.504171,
+    lng: -2.549914,
+  }; // You can change the coordinates to the desired default location
+
+  const [userLocation, setUserLocation] = useState(defaultCenter);
   const [radius, setRadius] = useState(5);
 
   const handleSearchUpdate = (locationCoords, radius) => {
@@ -20,7 +25,7 @@ export default function Home() {
   if (!isLoaded) return <div>Loading...</div>;
   return (
     <>
-      <NavigationPanel onSearchUpdate={handleSearchUpdate} />
+      <NavigationPanel defaultCenter={defaultCenter} onSearchUpdate={handleSearchUpdate} />
       <MapContainer userLocation={userLocation} radius={radius} />
     </>
   );
