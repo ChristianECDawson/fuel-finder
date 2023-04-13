@@ -16,6 +16,7 @@ export default function Home() {
 
   const [userLocation, setUserLocation] = useState(defaultCenter);
   const [radius, setRadius] = useState(5000);
+  const [stations, setStations] = useState([]);
 
   const handleSearchUpdate = (locationCoords, radius) => {
     setUserLocation(locationCoords);
@@ -25,8 +26,13 @@ export default function Home() {
   if (!isLoaded) return <div>Loading...</div>;
   return (
     <>
-      <NavigationPanel defaultCenter={defaultCenter} onSearchUpdate={handleSearchUpdate} />
-      <MapContainer userLocation={userLocation} radius={radius} />
+      <NavigationPanel
+        defaultCenter={defaultCenter}
+        onSearchUpdate={handleSearchUpdate}
+        stations={stations}
+        setStations={setStations}
+      />
+      <MapContainer userLocation={userLocation} radius={radius} stations={stations} setStations={setStations} />
     </>
   );
 }

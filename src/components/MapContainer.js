@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { fetchNearbyFuelStations } from '../api';
 
-function MapContainer({ userLocation, radius }) {
-    const [stations, setStations] = useState([]);
+function MapContainer({ userLocation, radius, stations, setStations }) {
     const [selectedStation, setSelectedStation] = useState(null);
 
     const mapContainerStyle = {
@@ -47,27 +46,13 @@ function MapContainer({ userLocation, radius }) {
 
     const renderCircle = () => {
         if (userLocation) {
-            return (
-                <Circle
-                    center={userLocation}
-                    radius={radius} // Convert radius from kilometers to meters
-                    options={{
-                        strokeColor: '#FF0000',
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: '#FF0000',
-                        fillOpacity: 0.2,
-                        clickable: false,
-                        draggable: false,
-                        editable: false,
-                        zIndex: 1,
-                    }}
-                />
-            );
+            console.log("Rendering circle with userLocation and radius:", userLocation, radius);
+            return <Circle center={userLocation} radius={radius} />;
         } else {
             return null;
         }
     };
+
 
     const renderInfoWindow = () => {
         if (selectedStation) {
