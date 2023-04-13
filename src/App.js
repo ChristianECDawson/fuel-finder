@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import MapContainer from './components/MapContainer';
 import NavigationPanel from './components/NavigationPanel';
-import { fetchNearbyFuelStations } from './api';
+import { fetchNearbyFuelStations, geocodeAddress } from './api';
 
 export default function Home() {
   const { isLoaded } = useJsApiLoader({
@@ -18,10 +18,16 @@ export default function Home() {
   const [userLocation, setUserLocation] = useState(defaultCenter);
   const [radius, setRadius] = useState(5000);
   const [stations, setStations] = useState([]);
+  const [destination, setDestination] = useState(null);
+
+  const onDirectionsClick = (location) => {
+    setDestination(location);
+  };
 
   const handleSearchUpdate = (locationCoords, radius) => {
     setUserLocation(locationCoords);
     setRadius(radius);
+    setDestination(null);
   };
 
   useEffect(() => {
@@ -54,8 +60,15 @@ export default function Home() {
         onSearchUpdate={handleSearchUpdate}
         stations={stations}
         setStations={setStations}
+        onDirectionsClick={onDirectionsClick}
       />
-      <MapContainer userLocation={userLocation} radius={radius} stations={stations} setStations={setStations} />
+      <MapContainer
+        userLocation={userLocation}
+        radius={radius}
+        stations={stations}
+        setStations={setStations}
+        destination={destination}
+        onDirectionsClick={onDirectionsClick} />
     </>
   );
 }

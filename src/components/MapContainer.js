@@ -1,8 +1,33 @@
-import React, { useState } from 'react';
-import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
+import React, { useState, useEffect } from 'react';
+import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
+import FuelStationCard from './FuelStationCard';
 
-function MapContainer({ userLocation, radius, stations, setStations }) {
+function MapContainer({ userLocation, radius, stations, setStations, destination, onDirectionsClick }) {
     const [selectedStation, setSelectedStation] = useState(null);
+    const [directionsServiceRef, setDirectionsServiceRef] = useState(null);
+
+    useEffect(() => {
+        if (!destination) {
+            setDirectionsServiceRef(null);
+        } else if (destination && userLocation) {
+            const directionsService = new window.google.maps.DirectionsService();
+
+            directionsService.route(
+                {
+                    origin: userLocation,
+                    destination: destination,
+                    travelMode: window.google.maps.TravelMode.DRIVING,
+                },
+                (result, status) => {
+                    if (status === window.google.maps.DirectionsStatus.OK) {
+                        setDirectionsServiceRef(result);
+                    } else {
+                        console.error(`Directions request failed due to ${status}`);
+                    }
+                }
+            );
+        }
+    }, [destination, userLocation]);
 
     const mapContainerStyle = {
         width: '100%',
@@ -53,9 +78,7 @@ function MapContainer({ userLocation, radius, stations, setStations }) {
                     }}
                 >
                     <div>
-                        <h3>{selectedStation.name}</h3>
-                        <p>Address: {selectedStation.vicinity}</p>
-                        {/* Add additional information here */}
+                        <FuelStationCard station={selectedStation} onDirectionsClick={onDirectionsClick} />
                     </div>
                 </InfoWindow>
             );
@@ -64,11 +87,21 @@ function MapContainer({ userLocation, radius, stations, setStations }) {
         }
     };
 
+    const renderDirections = () => {
+        if (directionsServiceRef) {
+            return <DirectionsRenderer directions={directionsServiceRef} />;
+        } else {
+            return null;
+        }
+    };
+
+
     return (
         <GoogleMap zoom={14} center={userLocation} mapContainerStyle={mapContainerStyle}>
             {renderMarkers()}
             {renderCircle()}
             {renderInfoWindow()}
+            {renderDirections()}
         </GoogleMap>
     );
 }

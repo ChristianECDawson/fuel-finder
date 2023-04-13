@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 
-function FuelStationCard({ station }) {
+function FuelStationCard({ station, onDirectionsClick }) {
     return (
         <Card>
             <CardContent>
@@ -18,6 +18,17 @@ function FuelStationCard({ station }) {
                     Diesel: £{station.dieselPrice.toFixed(2)} /L
                 </Typography>
             </CardContent>
+            <CardActions>
+                <Button
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                        onDirectionsClick(station.geometry.location);
+                    }}
+                >
+                    Get Directions
+                </Button>
+            </CardActions>
         </Card>
     );
 }

@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     },
 });
 
-const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSearchUpdate, stations, setStations }) => {
+const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSearchUpdate, stations, setStations, onDirectionsClick }) => {
     const classes = useStyles();
     const [location, setLocation] = useState('');
     const [locationCoords, setLocationCoords] = useState(defaultCenter);
@@ -128,7 +128,13 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
                         </Grid>
                     </Box>
                     <Divider />
-                    <StationList location={locationCoords} radius={radius} stations={stations} setStations={setStations} />
+                    <StationList
+                        location={locationCoords}
+                        radius={radius}
+                        stations={stations}
+                        setStations={setStations}
+                        onDirectionsClick={onDirectionsClick} // Add this line
+                    />
                 </Box>
             </Drawer>
         </>
