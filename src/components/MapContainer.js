@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import FuelStationCard from './FuelStationCard';
+import fuelStationIcon from '../images/fuelstation.png'
+import userLocationIcon from '../images/userlocation.png'
 
 function MapContainer({ userLocation, radius, stations, setStations, destination, onDirectionsClick }) {
     const [selectedStation, setSelectedStation] = useState(null);
@@ -36,24 +38,49 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
     };
 
     const renderMarkers = () => {
+        const markers = [];
+
         if (Array.isArray(stations)) {
-            return stations.map((station) => (
+            stations.forEach((station) => {
+                markers.push(
+                    <Marker
+                        key={station.place_id}
+                        position={{
+                            lat: station.geometry.location.lat,
+                            lng: station.geometry.location.lng,
+                        }}
+                        icon={{
+                            url: fuelStationIcon,
+                            scaledSize: new window.google.maps.Size(64, 64),
+                        }}
+                        animation={window.google.maps.Animation.DROP}
+                        onClick={() => {
+                            setSelectedStation(station);
+                        }}
+                    />
+                );
+            });
+        } else {
+            console.error("stations is not an array:", stations);
+        }
+
+        if (userLocation) {
+            console.log("USERLOCATION", userLocation);
+            markers.push(
                 <Marker
-                    key={station.place_id}
-                    position={{
-                        lat: station.geometry.location.lat,
-                        lng: station.geometry.location.lng,
-                    }}
-                    onClick={() => {
-                        setSelectedStation(station);
+                    key="user_location"
+                    position={userLocation}
+                    icon={{
+                        url: userLocationIcon,
+                        scaledSize: new window.google.maps.Size(64, 64),
                     }}
                 />
-            ));
-        } else {
-            console.error('stations is not an array:', stations);
-            return null;
+            );
         }
+
+        return markers;
     };
+
 
     const renderCircle = () => {
         if (userLocation) {
@@ -63,7 +90,6 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
             return null;
         }
     };
-
 
     const renderInfoWindow = () => {
         if (selectedStation) {
@@ -107,4 +133,3 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
 }
 
 export default MapContainer;
-
