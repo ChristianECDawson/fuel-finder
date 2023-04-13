@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
-import { fetchNearbyFuelStations } from '../api';
 
 function MapContainer({ userLocation, radius, stations, setStations }) {
     const [selectedStation, setSelectedStation] = useState(null);
@@ -10,19 +9,6 @@ function MapContainer({ userLocation, radius, stations, setStations }) {
         height: 'calc(100vh - 64px)',
         position: 'relative',
     };
-
-    useEffect(() => {
-        if (userLocation && radius) { // Add a condition to check if radius is also provided
-            fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius)
-                .then((results) => {
-                    console.log('API response:', results);
-                    setStations(results.results);
-                })
-                .catch((error) => {
-                    console.error('Error fetching fuel stations:', error);
-                });
-        }
-    }, [userLocation, radius]); // Add radius to the dependency array
 
     const renderMarkers = () => {
         if (Array.isArray(stations)) {

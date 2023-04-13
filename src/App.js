@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import MapContainer from './components/MapContainer';
 import NavigationPanel from './components/NavigationPanel';
+import { fetchNearbyFuelStations } from './api';
 
 export default function Home() {
   const { isLoaded } = useJsApiLoader({
@@ -22,6 +23,28 @@ export default function Home() {
     setUserLocation(locationCoords);
     setRadius(radius);
   };
+
+  useEffect(() => {
+    if (userLocation && radius) {
+      fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius)
+        .then((results) => {
+          console.log('API response:', results);
+
+          const transformedStations = results.results.map((station) => {
+            return {
+              ...station,
+              gasPrice: parseFloat((Math.random() * (1.5 - 1.2) + 1.2).toFixed(2)),
+              dieselPrice: parseFloat((Math.random() * (1.7 - 1.4) + 1.4).toFixed(2)),
+            };
+          });
+
+          setStations(transformedStations);
+        })
+        .catch((error) => {
+          console.error('Error fetching fuel stations:', error);
+        });
+    }
+  }, [userLocation, radius]);
 
   if (!isLoaded) return <div>Loading...</div>;
   return (

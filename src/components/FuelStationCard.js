@@ -1,23 +1,25 @@
 import React from 'react';
 import { Card, CardContent, Typography } from '@mui/material';
 
-const FuelStationCard = ({ station }) => {
+function FuelStationCard({ station }) {
     return (
-        <Card sx={{ marginBottom: 1 }}>
+        <Card>
             <CardContent>
-                <Typography variant="h6" component="div">
+                <Typography variant="h6" component="h2">
                     {station.name}
                 </Typography>
-                <Typography color="text.secondary" gutterBottom>
-                    {station.address}
+                <Typography color="textSecondary" gutterBottom>
+                    {station.vicinity}
                 </Typography>
-                <Typography variant="body2">
-                    {/* Display fuel prices here */}
-                    {`Gas: $${station.gasPrice}, Diesel: $${station.dieselPrice}`}
+                <Typography>
+                    Petrol: £{station.gasPrice.toFixed(2)} /L
+                </Typography>
+                <Typography>
+                    Diesel: £{station.dieselPrice.toFixed(2)} /L
                 </Typography>
             </CardContent>
         </Card>
     );
-};
+}
 
 export default FuelStationCard;
