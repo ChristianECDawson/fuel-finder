@@ -4,7 +4,7 @@ import FuelStationCard from './FuelStationCard';
 import fuelStationIcon from '../images/fuelstation.png'
 import userLocationIcon from '../images/userlocation.png'
 
-function MapContainer({ userLocation, radius, stations, setStations, destination, onDirectionsClick }) {
+function MapContainer({ userLocation, radius, stations, setStations, destination, onDirectionsClick, isBlurred }) {
     const [selectedStation, setSelectedStation] = useState(null);
     const [directionsServiceRef, setDirectionsServiceRef] = useState(null);
 
@@ -35,6 +35,7 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
         width: '100%',
         height: 'calc(100vh - 64px)',
         position: 'relative',
+        filter: isBlurred ? 'blur(5px)' : 'none',
     };
 
     const renderMarkers = () => {
@@ -123,7 +124,7 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
 
 
     return (
-        <GoogleMap zoom={14} center={userLocation} mapContainerStyle={mapContainerStyle}>
+        <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle}>
             {renderMarkers()}
             {renderCircle()}
             {renderInfoWindow()}

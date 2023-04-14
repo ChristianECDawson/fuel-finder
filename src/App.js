@@ -1,8 +1,10 @@
+// App.js
 import React, { useState, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import MapContainer from './components/MapContainer';
 import NavigationPanel from './components/NavigationPanel';
 import { fetchNearbyFuelStations, geocodeAddress } from './api';
+import LandingPage from './components/LandingPage';
 
 export default function Home() {
   const { isLoaded } = useJsApiLoader({
@@ -19,6 +21,16 @@ export default function Home() {
   const [radius, setRadius] = useState(5000);
   const [stations, setStations] = useState([]);
   const [destination, setDestination] = useState(null);
+  const [locationConfirmed, setLocationConfirmed] = useState(false);
+
+  const mapAndLandingPageContainerStyle = {
+    position: 'relative',
+  };
+
+  const handleLocationConfirm = (location) => {
+    setUserLocation(location);
+    setLocationConfirmed(true);
+  };
 
   const onDirectionsClick = (location) => {
     setDestination(location);
@@ -28,6 +40,7 @@ export default function Home() {
     setUserLocation(locationCoords);
     setRadius(radius);
     setDestination(null);
+    setLocationConfirmed(true);
   };
 
   useEffect(() => {
@@ -53,6 +66,7 @@ export default function Home() {
   }, [userLocation, radius]);
 
   if (!isLoaded) return <div>Loading...</div>;
+
   return (
     <>
       <NavigationPanel
@@ -62,13 +76,20 @@ export default function Home() {
         setStations={setStations}
         onDirectionsClick={onDirectionsClick}
       />
-      <MapContainer
-        userLocation={userLocation}
-        radius={radius}
-        stations={stations}
-        setStations={setStations}
-        destination={destination}
-        onDirectionsClick={onDirectionsClick} />
+      <div style={mapAndLandingPageContainerStyle}>
+        <MapContainer
+          userLocation={userLocation}
+          radius={radius}
+          stations={stations}
+          setStations={setStations}
+          destination={destination}
+          onDirectionsClick={onDirectionsClick}
+          isBlurred={!locationConfirmed}
+        />
+        {!locationConfirmed && (
+          <LandingPage onLocationConfirm={handleLocationConfirm} />
+        )}
+      </div>
     </>
   );
 }
