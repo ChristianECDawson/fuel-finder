@@ -75,6 +75,7 @@ export default function Home() {
         stations={stations}
         setStations={setStations}
         onDirectionsClick={onDirectionsClick}
+        isBlurred={!locationConfirmed}
       />
       <div style={mapAndLandingPageContainerStyle}>
         <MapContainer

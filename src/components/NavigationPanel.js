@@ -34,7 +34,7 @@ const useStyles = makeStyles({
     },
 });
 
-const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSearchUpdate, stations, setStations, onDirectionsClick }) => {
+const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSearchUpdate, stations, setStations, onDirectionsClick, isBlurred }) => {
     const classes = useStyles();
     const [location, setLocation] = useState('');
     const [locationCoords, setLocationCoords] = useState(defaultCenter);
@@ -106,7 +106,7 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
                                         label="Radius (meters)"
                                         fullWidth
                                         type="number"
-                                        inputProps={{ min: 1, max: 50000 }}
+                                        inputProps={{ min: 500, max: 5000, step: 500 }}
                                         value={radius}
                                         onChange={handleRadiusChange}
                                     />
@@ -128,13 +128,15 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
                         </Grid>
                     </Box>
                     <Divider />
-                    <StationList
-                        location={locationCoords}
-                        radius={radius}
-                        stations={stations}
-                        setStations={setStations}
-                        onDirectionsClick={onDirectionsClick} // Add this line
-                    />
+                    {!isBlurred && (
+                        <StationList
+                            location={locationCoords}
+                            radius={radius}
+                            stations={stations}
+                            setStations={setStations}
+                            onDirectionsClick={onDirectionsClick}
+                        />
+                    )}
                 </Box>
             </Drawer>
         </>
