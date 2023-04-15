@@ -41,6 +41,7 @@ export default function Home() {
     setUserLocation(locationCoords);
     setRadius(radius);
     setDestination(null);
+    setCompareStations([]);
     setLocationConfirmed(true);
   };
 
