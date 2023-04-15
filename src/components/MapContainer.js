@@ -82,15 +82,23 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
         return markers;
     };
 
-
     const renderCircle = () => {
         if (userLocation) {
             console.log("Rendering circle with userLocation and radius:", userLocation, radius);
-            return <Circle center={userLocation} radius={radius} />;
+            const circleOptions = {
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35,
+                zIndex: 1,
+            };
+            return <Circle center={userLocation} radius={radius} options={circleOptions} />;
         } else {
             return null;
         }
     };
+
 
     const renderInfoWindow = () => {
         if (selectedStation) {

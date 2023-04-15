@@ -17,6 +17,9 @@ function FuelStationCard({ station, onDirectionsClick }) {
                 <Typography>
                     Diesel: £{station.dieselPrice.toFixed(2)} /L
                 </Typography>
+                <Typography>
+                    Distance : {station.distance} km
+                </Typography>
             </CardContent>
             <CardActions>
                 <Button

@@ -50,10 +50,22 @@ export default function Home() {
           console.log('API response:', results);
 
           const transformedStations = results.results.map((station) => {
+            const stationLatLng = new window.google.maps.LatLng(
+              station.geometry.location.lat,
+              station.geometry.location.lng
+            );
+            const userLatLng = new window.google.maps.LatLng(userLocation.lat, userLocation.lng);
+
+            const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
+              userLatLng,
+              stationLatLng
+            );
+
             return {
               ...station,
               gasPrice: parseFloat((Math.random() * (1.5 - 1.2) + 1.2).toFixed(2)),
               dieselPrice: parseFloat((Math.random() * (1.7 - 1.4) + 1.4).toFixed(2)),
+              distance: parseFloat((distance / 1000).toFixed(2)), // Distance in kilometers
             };
           });
 

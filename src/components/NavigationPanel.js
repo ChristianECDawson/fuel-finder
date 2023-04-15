@@ -12,6 +12,8 @@ import {
     InputLabel,
     OutlinedInput,
     Button,
+    Select,
+    MenuItem,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
@@ -34,13 +36,23 @@ const useStyles = makeStyles({
     },
 });
 
-const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSearchUpdate, stations, setStations, onDirectionsClick, isBlurred }) => {
+const NavigationPanel = ({
+    defaultCenter,
+    onLocationChange,
+    onRadiusChange,
+    onSearchUpdate,
+    stations,
+    setStations,
+    onDirectionsClick,
+    isBlurred,
+}) => {
     const classes = useStyles();
     const [location, setLocation] = useState('');
     const [locationCoords, setLocationCoords] = useState(defaultCenter);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [radius, setRadius] = useState(5000);
     const autoCompleteRef = useRef(null);
+    const [sortBy, setSortBy] = useState('distance'); // Add this line
 
     // Add this piece of state to store the current search parameters
     const [currentSearch, setCurrentSearch] = useState({ locationCoords: null, radius: null });
@@ -72,6 +84,26 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
         }
     };
 
+    const sortStations = (stations, location, sortBy) => {
+        const sortedStations = [...stations];
+
+        if (sortBy === 'distance') {
+            sortedStations.sort((a, b) => {
+                return a.distance - b.distance;
+            });
+        } else if (sortBy === 'gasPrice') {
+            sortedStations.sort((a, b) => {
+                return a.gasPrice - b.gasPrice;
+            });
+        } else if (sortBy === 'dieselPrice') {
+            sortedStations.sort((a, b) => {
+                return a.dieselPrice - b.dieselPrice;
+            });
+        }
+
+        return sortedStations;
+    };
+
     return (
         <>
             <AppBar position="static" className={classes.appBar}>
@@ -88,7 +120,8 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
                 </Toolbar>
             </AppBar>
             <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-                <Box className={classes.drawer} role="presentation">
+                <Box className={classes
+                    .drawer} role="presentation">
                     <Box m={2}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -113,6 +146,22 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel>Sort by</InputLabel>
+                                    <Select
+                                        value={sortBy}
+                                        onChange={(e) => {
+                                            setSortBy(e.target.value);
+                                        }}
+                                        label="Sort by"
+                                    >
+                                        <MenuItem value="distance">Distance</MenuItem>
+                                        <MenuItem value="gasPrice">Gas price</MenuItem>
+                                        <MenuItem value="dieselPrice">Diesel price</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
                                 <Button
                                     variant="contained"
                                     color="primary"
@@ -132,7 +181,7 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
                         <StationList
                             location={locationCoords}
                             radius={radius}
-                            stations={stations}
+                            stations={sortStations(stations, locationCoords, sortBy)} // Pass the sorted stations here
                             setStations={setStations}
                             onDirectionsClick={onDirectionsClick}
                         />
@@ -144,5 +193,3 @@ const NavigationPanel = ({ defaultCenter, onLocationChange, onRadiusChange, onSe
 };
 
 export default NavigationPanel;
-
-
