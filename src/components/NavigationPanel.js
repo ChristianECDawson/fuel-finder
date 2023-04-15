@@ -158,7 +158,7 @@ const NavigationPanel = ({
                                         label="Sort by"
                                     >
                                         <MenuItem value="distance">Distance</MenuItem>
-                                        <MenuItem value="gasPrice">Gas price</MenuItem>
+                                        <MenuItem value="gasPrice">Unleaded price</MenuItem>
                                         <MenuItem value="dieselPrice">Diesel price</MenuItem>
                                     </Select>
                                 </FormControl>

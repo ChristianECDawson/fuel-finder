@@ -64,8 +64,8 @@ export default function Home() {
 
             return {
               ...station,
-              gasPrice: parseFloat((Math.random() * (1.5 - 1.2) + 1.2).toFixed(2)),
-              dieselPrice: parseFloat((Math.random() * (1.7 - 1.4) + 1.4).toFixed(2)),
+              gasPrice: parseFloat((Math.random() * (1.52 - 1.42) + 1.42).toFixed(2)),
+              dieselPrice: parseFloat((Math.random() * (1.73 - 1.63) + 1.63).toFixed(2)),
               distance: parseFloat((distance / 1000).toFixed(2)), // Distance in kilometers
             };
           });

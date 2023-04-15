@@ -1,5 +1,5 @@
-import React from 'react';
-import { Paper, Typography, Grid, Card, CardContent } from '@mui/material';
+import React, { useState } from 'react';
+import { Paper, Typography, Grid, Card, CardContent, TextField } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -14,6 +14,7 @@ const useStyles = makeStyles({
         zIndex: 1300,
         padding: 16,
         cursor: 'move',
+        maxWidth: 550,
     },
     card: {
         minWidth: 275,
@@ -22,6 +23,7 @@ const useStyles = makeStyles({
 
 const CompareStationsWindow = ({ compareStations }) => {
     const classes = useStyles();
+    const [fuelEconomy, setFuelEconomy] = useState(40);
 
     const getArrow = (value1, value2) => {
         if (value1 > value2) {
@@ -29,7 +31,27 @@ const CompareStationsWindow = ({ compareStations }) => {
         } else if (value1 < value2) {
             return <ArrowDropUpIcon style={{ color: 'green' }} />;
         } else {
-            return <RemoveIcon style={{ color: 'grey' }} />; // Add this line
+            return <RemoveIcon style={{ color: 'grey' }} />;
+        }
+    };
+
+    const calculateFuelEfficiency = (stationA, stationB, fuelType, fuelEconomy) => {
+        if (!fuelEconomy) return null;
+
+        const litersPerGallon = 4.54609;
+        const kmPerMile = 1.60934;
+
+        const fuelEconomyLitersPer100Km = (100 * litersPerGallon) / (fuelEconomy * kmPerMile);
+
+        const fuelCostA = (stationA.distance * fuelEconomyLitersPer100Km * stationA[`${fuelType}Price`]) / 100;
+        const fuelCostB = (stationB.distance * fuelEconomyLitersPer100Km * stationB[`${fuelType}Price`]) / 100;
+
+        if (fuelCostA < fuelCostB) {
+            return `For ${fuelType === 'gas' ? 'petrol' : 'diesel'}, ${stationA.name} is more fuel-efficient. You'll spend £${fuelCostA.toFixed(2)} on fuel.`;
+        } else if (fuelCostA > fuelCostB) {
+            return `For ${fuelType === 'gas' ? 'petrol' : 'diesel'}, ${stationB.name} is more fuel-efficient. You'll spend £${fuelCostB.toFixed(2)} on fuel.`;
+        } else {
+            return `Both stations have the same fuel efficiency. You'll spend £${fuelCostA.toFixed(2)} on fuel.`;
         }
     };
 
@@ -44,7 +66,7 @@ const CompareStationsWindow = ({ compareStations }) => {
                                 <CardContent>
                                     <Typography variant="h6">{station.name}</Typography>
                                     <Typography variant="body1">
-                                        Petrol: £{station.gasPrice.toFixed(2)} /L{' '}
+                                        Unleaded: £{station.gasPrice.toFixed(2)} /L{' '}
                                         {index === 0
                                             ? getArrow(station.gasPrice, compareStations[1].gasPrice)
                                             : getArrow(station.gasPrice, compareStations[0].gasPrice)}
@@ -65,6 +87,26 @@ const CompareStationsWindow = ({ compareStations }) => {
                             </Card>
                         </Grid>
                     ))}
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Fuel economy (mpg)"
+                            variant="outlined"
+                            size="small"
+                            type="number"
+                            onChange={(e) => setFuelEconomy(e.target.value)}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="body1">
+                            {calculateFuelEfficiency(compareStations[0], compareStations[1], 'gas', fuelEconomy)}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="body1">
+                            {calculateFuelEfficiency(compareStations[0], compareStations[1], 'diesel', fuelEconomy)}
+                        </Typography>
+                    </Grid>
                 </Grid>
             </Paper>
         </Draggable>
@@ -72,4 +114,5 @@ const CompareStationsWindow = ({ compareStations }) => {
 };
 
 export default CompareStationsWindow;
+
 

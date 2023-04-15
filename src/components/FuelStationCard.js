@@ -27,7 +27,7 @@ function FuelStationCard({
                     {station.vicinity}
                 </Typography>
                 <Typography>
-                    Petrol: £{station.gasPrice.toFixed(2)} /L
+                    Unleaded: £{station.gasPrice.toFixed(2)} /L
                 </Typography>
                 <Typography>
                     Diesel: £{station.dieselPrice.toFixed(2)} /L
