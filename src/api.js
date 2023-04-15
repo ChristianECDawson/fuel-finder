@@ -1,12 +1,29 @@
 import axios from 'axios';
 
+function isLocationApproximatelyEqual(location1, location2, threshold = 0.0005) {
+    const latDiff = Math.abs(location1.lat - location2.lat);
+    const lngDiff = Math.abs(location1.lng - location2.lng);
+    return latDiff <= threshold && lngDiff <= threshold;
+}
+
 export async function fetchNearbyFuelStations(latitude, longitude, radius) {
     try {
         console.log('fetchNearbyFuelStations params:', latitude, longitude, radius);
         const response = await axios.get(`/api/fuelstations?lat=${latitude}&lng=${longitude}&radius=${radius}`);
 
         if (response.status === 200) {
-            return response.data;
+            const uniqueStations = [];
+            response.data.results.forEach((station) => {
+                const isDuplicate = uniqueStations.some((uniqueStation) => {
+                    return isLocationApproximatelyEqual(uniqueStation.geometry.location, station.geometry.location);
+                });
+
+                if (!isDuplicate) {
+                    uniqueStations.push(station);
+                }
+            });
+
+            return { results: uniqueStations };
         } else {
             throw new Error(`Error fetching fuel stations: ${response.status}`);
         }

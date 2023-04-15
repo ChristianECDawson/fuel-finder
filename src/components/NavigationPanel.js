@@ -46,6 +46,8 @@ const NavigationPanel = ({
     setStations,
     onDirectionsClick,
     isBlurred,
+    compareStations,
+    setCompareStations,
 }) => {
     const classes = useStyles();
     const [location, setLocation] = useState('');
@@ -57,7 +59,6 @@ const NavigationPanel = ({
 
     // Add this piece of state to store the current search parameters
     const [currentSearch, setCurrentSearch] = useState({ locationCoords: null, radius: null });
-    const [compareStations, setCompareStations] = useState([]);
 
     const handleLocationChange = (value) => {
         setLocation(value);
@@ -185,8 +186,8 @@ const NavigationPanel = ({
                             stations={sortStations(stations, locationCoords, sortBy)}
                             setStations={setStations}
                             onDirectionsClick={onDirectionsClick}
-                            compareStations={compareStations} // Add this line
-                            setCompareStations={setCompareStations} // Add this line
+                            compareStations={compareStations}
+                            setCompareStations={setCompareStations}
                         />
                     )}
                 </Box>

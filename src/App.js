@@ -22,6 +22,7 @@ export default function Home() {
   const [stations, setStations] = useState([]);
   const [destination, setDestination] = useState(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
+  const [compareStations, setCompareStations] = useState([]);
 
   const mapAndLandingPageContainerStyle = {
     position: 'relative',
@@ -88,6 +89,8 @@ export default function Home() {
         setStations={setStations}
         onDirectionsClick={onDirectionsClick}
         isBlurred={!locationConfirmed}
+        compareStations={compareStations}
+        setCompareStations={setCompareStations}
       />
       <div style={mapAndLandingPageContainerStyle}>
         <MapContainer
@@ -98,6 +101,8 @@ export default function Home() {
           destination={destination}
           onDirectionsClick={onDirectionsClick}
           isBlurred={!locationConfirmed}
+          compareStations={compareStations}
+          setCompareStations={setCompareStations}
         />
         {!locationConfirmed && (
           <LandingPage onLocationConfirm={handleLocationConfirm} />

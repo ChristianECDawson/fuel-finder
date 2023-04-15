@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
+import Draggable from 'react-draggable';
 import FuelStationCard from './FuelStationCard';
+import CompareStationsWindow from './CompareStationsWindow';
 import fuelStationIcon from '../images/fuelstation.png'
 import userLocationIcon from '../images/userlocation.png'
+import fuelStationSelectedIcon from '../images/fuelstationSelected.png';
 
-function MapContainer({ userLocation, radius, stations, setStations, destination, onDirectionsClick, isBlurred }) {
+function MapContainer({
+    userLocation,
+    radius,
+    stations,
+    setStations,
+    destination,
+    onDirectionsClick,
+    isBlurred,
+    compareStations,
+    setCompareStations,
+}) {
     const [selectedStation, setSelectedStation] = useState(null);
     const [directionsServiceRef, setDirectionsServiceRef] = useState(null);
 
@@ -43,6 +56,11 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
 
         if (Array.isArray(stations)) {
             stations.forEach((station) => {
+                // Check if the station is in the compareStations array
+                const isSelected = compareStations.some(
+                    (compareStation) => compareStation.place_id === station.place_id
+                );
+
                 markers.push(
                     <Marker
                         key={station.place_id}
@@ -51,7 +69,7 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
                             lng: station.geometry.location.lng,
                         }}
                         icon={{
-                            url: fuelStationIcon,
+                            url: isSelected ? fuelStationSelectedIcon : fuelStationIcon,
                             scaledSize: new window.google.maps.Size(64, 64),
                         }}
                         animation={window.google.maps.Animation.DROP}
@@ -82,6 +100,7 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
         return markers;
     };
 
+
     const renderCircle = () => {
         if (userLocation) {
             console.log("Rendering circle with userLocation and radius:", userLocation, radius);
@@ -108,12 +127,20 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
                         lat: selectedStation.geometry.location.lat,
                         lng: selectedStation.geometry.location.lng,
                     }}
+                    options={{
+                        pixelOffset: new window.google.maps.Size(0, -48), // This moves the InfoWindow up by 32 pixels.
+                    }}
                     onCloseClick={() => {
                         setSelectedStation(null);
                     }}
                 >
                     <div>
-                        <FuelStationCard station={selectedStation} onDirectionsClick={onDirectionsClick} />
+                        <FuelStationCard
+                            station={selectedStation}
+                            onDirectionsClick={onDirectionsClick}
+                            compareStations={compareStations}
+                            setCompareStations={setCompareStations}
+                        />
                     </div>
                 </InfoWindow>
             );
@@ -130,7 +157,6 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
         }
     };
 
-
     return (
         <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle}>
             {renderMarkers()}
@@ -139,6 +165,7 @@ function MapContainer({ userLocation, radius, stations, setStations, destination
             {renderDirections()}
         </GoogleMap>
     );
+
 }
 
 export default MapContainer;
