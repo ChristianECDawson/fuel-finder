@@ -70,7 +70,7 @@ function MapContainer({
                         }}
                         icon={{
                             url: isSelected ? fuelStationSelectedIcon : fuelStationIcon,
-                            scaledSize: new window.google.maps.Size(64, 64),
+                            scaledSize: isSelected ? new window.google.maps.Size(80, 80) : new window.google.maps.Size(64, 64),
                         }}
                         animation={window.google.maps.Animation.DROP}
                         onClick={() => {
