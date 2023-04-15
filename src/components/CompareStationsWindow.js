@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 
 const CompareStationsWindow = ({ compareStations }) => {
     const classes = useStyles();
-    const [fuelEconomy, setFuelEconomy] = useState(40);
+    const [fuelEconomy, setFuelEconomy] = useState(null);
 
     const getArrow = (value1, value2) => {
         if (value1 > value2) {
