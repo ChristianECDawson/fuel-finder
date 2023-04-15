@@ -19,6 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { makeStyles } from '@mui/styles';
 import StationList from './StationList';
 import LocationAutocomplete from './LocationAutocomplete';
+import CompareStationsWindow from './CompareStationsWindow';
 
 const useStyles = makeStyles({
     appBar: {
@@ -56,6 +57,7 @@ const NavigationPanel = ({
 
     // Add this piece of state to store the current search parameters
     const [currentSearch, setCurrentSearch] = useState({ locationCoords: null, radius: null });
+    const [compareStations, setCompareStations] = useState([]);
 
     const handleLocationChange = (value) => {
         setLocation(value);
@@ -120,8 +122,7 @@ const NavigationPanel = ({
                 </Toolbar>
             </AppBar>
             <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-                <Box className={classes
-                    .drawer} role="presentation">
+                <Box className={classes.drawer} role="presentation">
                     <Box m={2}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -181,15 +182,21 @@ const NavigationPanel = ({
                         <StationList
                             location={locationCoords}
                             radius={radius}
-                            stations={sortStations(stations, locationCoords, sortBy)} // Pass the sorted stations here
+                            stations={sortStations(stations, locationCoords, sortBy)}
                             setStations={setStations}
                             onDirectionsClick={onDirectionsClick}
+                            compareStations={compareStations} // Add this line
+                            setCompareStations={setCompareStations} // Add this line
                         />
                     )}
                 </Box>
             </Drawer>
+            {compareStations.length === 2 && (
+                <CompareStationsWindow compareStations={compareStations} />
+            )}
         </>
     );
 };
 
 export default NavigationPanel;
+

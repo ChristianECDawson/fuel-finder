@@ -1,7 +1,22 @@
 import React from 'react';
 import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 
-function FuelStationCard({ station, onDirectionsClick }) {
+function FuelStationCard({
+    station,
+    onDirectionsClick,
+    compareStations = [],
+    setCompareStations = () => { },
+}) {
+    const handleCompareClick = () => {
+        if (compareStations.length < 2 && !compareStations.includes(station)) {
+            setCompareStations([...compareStations, station]);
+        } else if (compareStations.includes(station)) {
+            setCompareStations(compareStations.filter((s) => s !== station));
+        }
+    };
+
+    const isSelected = compareStations.includes(station);
+
     return (
         <Card>
             <CardContent>
@@ -18,7 +33,7 @@ function FuelStationCard({ station, onDirectionsClick }) {
                     Diesel: £{station.dieselPrice.toFixed(2)} /L
                 </Typography>
                 <Typography>
-                    Distance : {station.distance} km
+                    Distance: {station.distance} km
                 </Typography>
             </CardContent>
             <CardActions>
@@ -30,6 +45,15 @@ function FuelStationCard({ station, onDirectionsClick }) {
                     }}
                 >
                     Get Directions
+                </Button>
+                <Button
+                    size="small"
+                    color={isSelected ? 'primary' : 'secondary'}
+                    variant={isSelected ? 'contained' : 'outlined'}
+                    onClick={handleCompareClick}
+                    disabled={compareStations.length >= 2 && !isSelected}
+                >
+                    {isSelected ? 'Selected' : 'Compare'}
                 </Button>
             </CardActions>
         </Card>
