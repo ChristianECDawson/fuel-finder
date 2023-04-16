@@ -17,13 +17,13 @@ const useStyles = makeStyles({
         maxWidth: 550,
     },
     card: {
-        minWidth: 275,
+        minWidth: 250,
     },
 });
 
 const CompareStationsWindow = ({ compareStations }) => {
     const classes = useStyles();
-    const [fuelEconomy, setFuelEconomy] = useState(null);
+    const [fuelEconomy, setFuelEconomy] = useState(40);
 
     const getArrow = (value1, value2) => {
         if (value1 > value2) {
@@ -58,7 +58,6 @@ const CompareStationsWindow = ({ compareStations }) => {
     return (
         <Draggable>
             <Paper className={classes.window}>
-                <Typography variant="h6">Compare Stations</Typography>
                 <Grid container spacing={2}>
                     {compareStations.map((station, index) => (
                         <Grid item xs={6} key={index}>
@@ -93,7 +92,9 @@ const CompareStationsWindow = ({ compareStations }) => {
                             variant="outlined"
                             size="small"
                             type="number"
+                            inputProps={{ min: 1, max: 200 }}
                             onChange={(e) => setFuelEconomy(e.target.value)}
+                            value={fuelEconomy}
                             fullWidth
                         />
                     </Grid>

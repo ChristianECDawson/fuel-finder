@@ -38,16 +38,20 @@ const useStyles = makeStyles({
 });
 
 const NavigationPanel = ({
+    userLocation,
     defaultCenter,
     onLocationChange,
     onRadiusChange,
     onSearchUpdate,
     stations,
+    destination,
     setStations,
     onDirectionsClick,
+    onClearDirectionsClick,
     isBlurred,
     compareStations,
     setCompareStations,
+    showingDirections
 }) => {
     const classes = useStyles();
     const [location, setLocation] = useState('');
@@ -55,10 +59,13 @@ const NavigationPanel = ({
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [radius, setRadius] = useState(5000);
     const autoCompleteRef = useRef(null);
-    const [sortBy, setSortBy] = useState('distance'); // Add this line
-
-    // Add this piece of state to store the current search parameters
+    const [sortBy, setSortBy] = useState('distance');
     const [currentSearch, setCurrentSearch] = useState({ locationCoords: null, radius: null });
+
+    const handleOpenInGoogleMaps = () => {
+        const url = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`;
+        window.open(url, '_blank');
+    };
 
     const handleLocationChange = (value) => {
         setLocation(value);
@@ -168,6 +175,7 @@ const NavigationPanel = ({
                                     variant="contained"
                                     color="primary"
                                     fullWidth
+                                    style={{ marginBottom: '16px' }}
                                     onClick={() => {
                                         onSearchUpdate(locationCoords, radius);
                                         setCurrentSearch({ locationCoords, radius });
@@ -175,6 +183,37 @@ const NavigationPanel = ({
                                 >
                                     Update Search
                                 </Button>
+                                {showingDirections && (
+                                    <div style={{ display: 'flex' }}>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            style={{
+                                                color: 'white',
+                                                marginRight: '8px',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                            color="secondary"
+                                            onClick={handleOpenInGoogleMaps}
+                                        >
+                                            Google Maps
+                                        </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            style={{
+                                                color: 'white',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                            color="primary"
+                                            onClick={onClearDirectionsClick}
+                                        >
+                                            Clear Directions
+                                        </Button>
+                                    </div>
+                                )}
+
                             </Grid>
                         </Grid>
                     </Box>

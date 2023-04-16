@@ -23,6 +23,8 @@ export default function Home() {
   const [destination, setDestination] = useState(null);
   const [locationConfirmed, setLocationConfirmed] = useState(false);
   const [compareStations, setCompareStations] = useState([]);
+  const [showingDirections, setShowingDirections] = useState(false);
+  const [zoomResetKey, setZoomResetKey] = useState(0);
 
   const mapAndLandingPageContainerStyle = {
     position: 'relative',
@@ -35,7 +37,13 @@ export default function Home() {
 
   const onDirectionsClick = (location) => {
     setDestination(location);
+    setShowingDirections(true);
   };
+
+  const onClearDirectionsClick = () => {
+    setDestination(null);
+    setShowingDirections(null);
+  }
 
   const handleSearchUpdate = (locationCoords, radius) => {
     setUserLocation(locationCoords);
@@ -43,6 +51,8 @@ export default function Home() {
     setDestination(null);
     setCompareStations([]);
     setLocationConfirmed(true);
+    setShowingDirections(null);
+    setZoomResetKey((prevKey) => prevKey + 1);
   };
 
   useEffect(() => {
@@ -84,14 +94,18 @@ export default function Home() {
   return (
     <>
       <NavigationPanel
+        userLocation={userLocation}
         defaultCenter={defaultCenter}
         onSearchUpdate={handleSearchUpdate}
         stations={stations}
+        destination={destination}
         setStations={setStations}
         onDirectionsClick={onDirectionsClick}
+        onClearDirectionsClick={onClearDirectionsClick}
         isBlurred={!locationConfirmed}
         compareStations={compareStations}
         setCompareStations={setCompareStations}
+        showingDirections={showingDirections}
       />
       <div style={mapAndLandingPageContainerStyle}>
         <MapContainer
@@ -104,6 +118,7 @@ export default function Home() {
           isBlurred={!locationConfirmed}
           compareStations={compareStations}
           setCompareStations={setCompareStations}
+          zoomResetKey={zoomResetKey}
         />
         {!locationConfirmed && (
           <LandingPage onLocationConfirm={handleLocationConfirm} />

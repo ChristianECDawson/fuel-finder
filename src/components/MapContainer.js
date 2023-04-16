@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import Draggable from 'react-draggable';
 import FuelStationCard from './FuelStationCard';
@@ -17,9 +17,24 @@ function MapContainer({
     isBlurred,
     compareStations,
     setCompareStations,
+    zoomResetKey,
 }) {
     const [selectedStation, setSelectedStation] = useState(null);
     const [directionsServiceRef, setDirectionsServiceRef] = useState(null);
+    const [mapRef, setMapRef] = useState(null);
+
+    // Add the onMapLoad function to store the map reference
+    const onMapLoad = useCallback((map) => {
+        setMapRef(map);
+    }, []);
+
+    // Add the useEffect hook that resets the zoom when zoomResetKey changes
+    useEffect(() => {
+        if (mapRef) {
+            mapRef.setZoom(13);
+        }
+    }, [zoomResetKey, mapRef]);
+
 
     useEffect(() => {
         if (!destination) {
@@ -118,7 +133,6 @@ function MapContainer({
         }
     };
 
-
     const renderInfoWindow = () => {
         if (selectedStation) {
             return (
@@ -158,7 +172,7 @@ function MapContainer({
     };
 
     return (
-        <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle}>
+        <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle} onLoad={onMapLoad}>
             {renderMarkers()}
             {renderCircle()}
             {renderInfoWindow()}
