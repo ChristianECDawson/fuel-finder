@@ -1,5 +1,6 @@
 import React from 'react';
 import FuelStationCard from './FuelStationCard';
+import CompareStationsWindow from './CompareStationsWindow';
 
 const StationList = ({ location, radius, stations, setStations, onDirectionsClick, compareStations, setCompareStations }) => {
 

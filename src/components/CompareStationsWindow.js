@@ -47,11 +47,11 @@ const CompareStationsWindow = ({ compareStations }) => {
         const fuelCostB = (stationB.distance * fuelEconomyLitersPer100Km * stationB[`${fuelType}Price`]) / 100;
 
         if (fuelCostA < fuelCostB) {
-            return `For ${fuelType === 'gas' ? 'petrol' : 'diesel'}, ${stationA.name} is more fuel-efficient. You'll spend £${fuelCostA.toFixed(2)} on fuel.`;
+            return `${fuelType === 'gas' ? 'Petrol' : 'Diesel'} : ${stationA.name} is more fuel-efficient. Cost of drive £${fuelCostA.toFixed(2)}`;
         } else if (fuelCostA > fuelCostB) {
-            return `For ${fuelType === 'gas' ? 'petrol' : 'diesel'}, ${stationB.name} is more fuel-efficient. You'll spend £${fuelCostB.toFixed(2)} on fuel.`;
+            return `${fuelType === 'gas' ? 'Petrol' : 'Diesel'} : ${stationB.name} is more fuel-efficient. Cost of drive £${fuelCostB.toFixed(2)}`;
         } else {
-            return `Both stations have the same fuel efficiency. You'll spend £${fuelCostA.toFixed(2)} on fuel.`;
+            return `Both stations have the same fuel efficiency. Cost of drive £${fuelCostA.toFixed(2)}.`;
         }
     };
 
@@ -92,9 +92,9 @@ const CompareStationsWindow = ({ compareStations }) => {
                             variant="outlined"
                             size="small"
                             type="number"
+                            value={fuelEconomy}
                             inputProps={{ min: 1, max: 200 }}
                             onChange={(e) => setFuelEconomy(e.target.value)}
-                            value={fuelEconomy}
                             fullWidth
                         />
                     </Grid>

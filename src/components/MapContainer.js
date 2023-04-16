@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import Draggable from 'react-draggable';
 import FuelStationCard from './FuelStationCard';
-import CompareStationsWindow from './CompareStationsWindow';
 import fuelStationIcon from '../images/fuelstation.png'
 import userLocationIcon from '../images/userlocation.png'
 import fuelStationSelectedIcon from '../images/fuelstationSelected.png';
