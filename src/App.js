@@ -6,10 +6,12 @@ import NavigationPanel from './components/NavigationPanel';
 import { fetchNearbyFuelStations, geocodeAddress } from './api';
 import LandingPage from './components/LandingPage';
 
+const googleMapsLibraries = ['places'];
+
 export default function Home() {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ['places'],
+    libraries: googleMapsLibraries,
   });
 
   const defaultCenter = {
@@ -61,61 +63,45 @@ export default function Home() {
         .then((results) => {
           console.log("API response:", results);
 
-          const directionsService = new window.google.maps.DirectionsService();
-
-          const fetchDrivingDistance = (origin, destination) => {
-            return new Promise((resolve, reject) => {
-              directionsService.route(
-                {
-                  origin: origin,
-                  destination: destination,
-                  travelMode: window.google.maps.TravelMode.DRIVING,
-                },
-                (result, status) => {
-                  if (status === window.google.maps.DirectionsStatus.OK) {
-                    const distanceInMeters =
-                      result.routes[0].legs[0].distance.value;
-                    resolve(distanceInMeters);
-                  } else {
-                    reject(`Directions request failed due to ${status}`);
-                  }
-                }
-              );
-            });
-          };
+          const distanceMatrixService = new window.google.maps.DistanceMatrixService();
 
           const fetchAllDrivingDistances = async () => {
             const transformedStations = [];
 
-            for (const station of results.results) {
-              try {
-                const drivingDistanceInMeters = await fetchDrivingDistance(
-                  userLocation,
-                  station.geometry.location
-                );
-                const drivingDistanceInKm = parseFloat(
-                  (drivingDistanceInMeters / 1000).toFixed(2)
-                );
+            const destinations = results.results.map(station => station.geometry.location);
 
-                transformedStations.push({
-                  ...station,
-                  gasPrice: parseFloat(
-                    (Math.random() * (1.52 - 1.42) + 1.42).toFixed(2)
-                  ),
-                  dieselPrice: parseFloat(
-                    (Math.random() * (1.73 - 1.63) + 1.63).toFixed(2)
-                  ),
-                  distance: drivingDistanceInKm, // Distance in kilometers
-                });
-              } catch (error) {
-                console.error(
-                  `Error fetching driving distance for station ${station.name}:`,
-                  error
-                );
+            distanceMatrixService.getDistanceMatrix({
+              origins: [userLocation],
+              destinations: destinations,
+              travelMode: window.google.maps.TravelMode.DRIVING,
+            }, (response, status) => {
+              if (status === window.google.maps.DistanceMatrixStatus.OK) {
+                const distances = response.rows[0].elements;
+
+                for (let i = 0; i < distances.length; i++) {
+                  const station = results.results[i];
+                  const drivingDistanceInMeters = distances[i].distance.value;
+                  const drivingDistanceInKm = parseFloat(
+                    (drivingDistanceInMeters / 1000).toFixed(2)
+                  );
+
+                  transformedStations.push({
+                    ...station,
+                    gasPrice: parseFloat(
+                      (Math.random() * (1.52 - 1.42) + 1.42).toFixed(2)
+                    ),
+                    dieselPrice: parseFloat(
+                      (Math.random() * (1.73 - 1.63) + 1.63).toFixed(2)
+                    ),
+                    distance: drivingDistanceInKm, // Distance in kilometers
+                  });
+                }
+
+                setStations(transformedStations);
+              } else {
+                console.error(`Distance Matrix request failed due to ${status}`);
               }
-            }
-
-            setStations(transformedStations);
+            });
           };
 
           fetchAllDrivingDistances();

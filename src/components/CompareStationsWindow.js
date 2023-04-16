@@ -35,25 +35,25 @@ const CompareStationsWindow = ({ compareStations }) => {
         }
     };
 
-    const calculateFuelEfficiency = (stationA, stationB, fuelType, fuelEconomy) => {
-        if (!fuelEconomy) return null;
+    const calculateFuelEfficiency = (stationA, stationB, fuelEconomy) => {
+        if (!fuelEconomy) return { gas: null, diesel: null, journeyCost: null };
 
         const litersPerGallon = 4.54609;
         const kmPerMile = 1.60934;
-
         const fuelEconomyLitersPer100Km = (100 * litersPerGallon) / (fuelEconomy * kmPerMile);
 
-        const fuelCostA = (stationA.distance * fuelEconomyLitersPer100Km * stationA[`${fuelType}Price`]) / 100;
-        const fuelCostB = (stationB.distance * fuelEconomyLitersPer100Km * stationB[`${fuelType}Price`]) / 100;
+        const fuelCost = (station, fuelType) => (station.distance * fuelEconomyLitersPer100Km * station[`${fuelType}Price`]) / 100;
 
-        if (fuelCostA < fuelCostB) {
-            return `${fuelType === 'gas' ? 'Petrol' : 'Diesel'} : ${stationA.name} is more fuel-efficient. Cost of drive £${fuelCostA.toFixed(2)}`;
-        } else if (fuelCostA > fuelCostB) {
-            return `${fuelType === 'gas' ? 'Petrol' : 'Diesel'} : ${stationB.name} is more fuel-efficient. Cost of drive £${fuelCostB.toFixed(2)}`;
-        } else {
-            return `Both stations have the same fuel efficiency. Cost of drive £${fuelCostA.toFixed(2)}.`;
-        }
+        const journeyCost = (station, fuelType) => (station.distance * fuelEconomyLitersPer100Km * station[`${fuelType}Price`]) / 100;
+
+        const gasEfficiency = fuelCost(stationA, 'gas') < fuelCost(stationB, 'gas') ? "0" : "1";
+        const dieselEfficiency = fuelCost(stationA, 'diesel') < fuelCost(stationB, 'diesel') ? "0" : "1";
+
+        return { gas: gasEfficiency, diesel: dieselEfficiency, journeyCost };
     };
+
+    const efficiency = calculateFuelEfficiency(compareStations[0], compareStations[1], fuelEconomy);
+    const { gas: gasEfficiency, diesel: dieselEfficiency, journeyCost } = efficiency;
 
     return (
         <Draggable>
@@ -61,8 +61,38 @@ const CompareStationsWindow = ({ compareStations }) => {
                 <Grid container spacing={2}>
                     {compareStations.map((station, index) => (
                         <Grid item xs={6} key={index}>
-                            <Card className={classes.card}>
+                            <Card
+                                className={classes.card}
+                                style={{
+                                    border:
+                                        efficiency.gas === index.toString() || efficiency.diesel === index.toString()
+                                            ? "2px solid green"
+                                            : efficiency.gas !== index.toString() && efficiency.diesel !== index.toString()
+                                                ? "2px solid red"
+                                                : "",
+                                }}
+                            >
                                 <CardContent>
+                                    {efficiency.gas === index.toString() && (
+                                        <Typography variant="body1" style={{ color: "green", fontWeight: "bold" }}>
+                                            More Efficient (Gas - £{journeyCost(station, 'gas').toFixed(2)})
+                                        </Typography>
+                                    )}
+                                    {efficiency.diesel === index.toString() && (
+                                        <Typography variant="body1" style={{ color: "green", fontWeight: "bold" }}>
+                                            More Efficient (Diesel - £{journeyCost(station, 'diesel').toFixed(2)})
+                                        </Typography>
+                                    )}
+                                    {efficiency.gas !== index.toString() && efficiency.diesel !== index.toString() && (
+                                        <>
+                                            <Typography variant="body1" style={{ color: "red", fontWeight: "bold" }}>
+                                                (Gas - £{journeyCost(station, 'gas').toFixed(2)})
+                                            </Typography>
+                                            <Typography variant="body1" style={{ color: "red", fontWeight: "bold" }}>
+                                                (Diesel - £{journeyCost(station, 'diesel').toFixed(2)})
+                                            </Typography>
+                                        </>
+                                    )}
                                     <Typography variant="h6">{station.name}</Typography>
                                     <Typography variant="body1">
                                         Unleaded: £{station.gasPrice.toFixed(2)} /L{' '}
@@ -97,16 +127,6 @@ const CompareStationsWindow = ({ compareStations }) => {
                             onChange={(e) => setFuelEconomy(e.target.value)}
                             fullWidth
                         />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="body1">
-                            {calculateFuelEfficiency(compareStations[0], compareStations[1], 'gas', fuelEconomy)}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="body1">
-                            {calculateFuelEfficiency(compareStations[0], compareStations[1], 'diesel', fuelEconomy)}
-                        </Typography>
                     </Grid>
                 </Grid>
             </Paper>
