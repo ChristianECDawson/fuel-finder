@@ -59,35 +59,73 @@ export default function Home() {
     if (userLocation && radius) {
       fetchNearbyFuelStations(userLocation.lat, userLocation.lng, radius)
         .then((results) => {
-          console.log('API response:', results);
+          console.log("API response:", results);
 
-          const transformedStations = results.results.map((station) => {
-            const stationLatLng = new window.google.maps.LatLng(
-              station.geometry.location.lat,
-              station.geometry.location.lng
-            );
-            const userLatLng = new window.google.maps.LatLng(userLocation.lat, userLocation.lng);
+          const directionsService = new window.google.maps.DirectionsService();
 
-            const distance = window.google.maps.geometry.spherical.computeDistanceBetween(
-              userLatLng,
-              stationLatLng
-            );
+          const fetchDrivingDistance = (origin, destination) => {
+            return new Promise((resolve, reject) => {
+              directionsService.route(
+                {
+                  origin: origin,
+                  destination: destination,
+                  travelMode: window.google.maps.TravelMode.DRIVING,
+                },
+                (result, status) => {
+                  if (status === window.google.maps.DirectionsStatus.OK) {
+                    const distanceInMeters =
+                      result.routes[0].legs[0].distance.value;
+                    resolve(distanceInMeters);
+                  } else {
+                    reject(`Directions request failed due to ${status}`);
+                  }
+                }
+              );
+            });
+          };
 
-            return {
-              ...station,
-              gasPrice: parseFloat((Math.random() * (1.52 - 1.42) + 1.42).toFixed(2)),
-              dieselPrice: parseFloat((Math.random() * (1.73 - 1.63) + 1.63).toFixed(2)),
-              distance: parseFloat((distance / 1000).toFixed(2)), // Distance in kilometers
-            };
-          });
+          const fetchAllDrivingDistances = async () => {
+            const transformedStations = [];
 
-          setStations(transformedStations);
+            for (const station of results.results) {
+              try {
+                const drivingDistanceInMeters = await fetchDrivingDistance(
+                  userLocation,
+                  station.geometry.location
+                );
+                const drivingDistanceInKm = parseFloat(
+                  (drivingDistanceInMeters / 1000).toFixed(2)
+                );
+
+                transformedStations.push({
+                  ...station,
+                  gasPrice: parseFloat(
+                    (Math.random() * (1.52 - 1.42) + 1.42).toFixed(2)
+                  ),
+                  dieselPrice: parseFloat(
+                    (Math.random() * (1.73 - 1.63) + 1.63).toFixed(2)
+                  ),
+                  distance: drivingDistanceInKm, // Distance in kilometers
+                });
+              } catch (error) {
+                console.error(
+                  `Error fetching driving distance for station ${station.name}:`,
+                  error
+                );
+              }
+            }
+
+            setStations(transformedStations);
+          };
+
+          fetchAllDrivingDistances();
         })
         .catch((error) => {
-          console.error('Error fetching fuel stations:', error);
+          console.error("Error fetching fuel stations:", error);
         });
     }
   }, [userLocation, radius]);
+
 
   if (!isLoaded) return <div>Loading...</div>;
 

@@ -33,7 +33,7 @@ function FuelStationCard({
                     Diesel: £{station.dieselPrice.toFixed(2)} /L
                 </Typography>
                 <Typography>
-                    Distance: {station.distance} km
+                    Distance: {station.distance} km | {(station.distance / 1.63).toFixed(2)} mile
                 </Typography>
             </CardContent>
             <CardActions>
