@@ -75,7 +75,7 @@ const CompareStationsWindow = ({ compareStations }) => {
                                 <CardContent>
                                     {efficiency.gas === index.toString() && (
                                         <Typography variant="body1" style={{ color: "green", fontWeight: "bold" }}>
-                                            More Efficient (Gas - £{journeyCost(station, 'gas').toFixed(2)})
+                                            More Efficient (Petrol - £{journeyCost(station, 'gas').toFixed(2)})
                                         </Typography>
                                     )}
                                     {efficiency.diesel === index.toString() && (
@@ -86,7 +86,7 @@ const CompareStationsWindow = ({ compareStations }) => {
                                     {efficiency.gas !== index.toString() && efficiency.diesel !== index.toString() && (
                                         <>
                                             <Typography variant="body1" style={{ color: "red", fontWeight: "bold" }}>
-                                                (Gas - £{journeyCost(station, 'gas').toFixed(2)})
+                                                (Petrol - £{journeyCost(station, 'gas').toFixed(2)})
                                             </Typography>
                                             <Typography variant="body1" style={{ color: "red", fontWeight: "bold" }}>
                                                 (Diesel - £{journeyCost(station, 'diesel').toFixed(2)})
