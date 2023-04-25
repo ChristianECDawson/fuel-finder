@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import FuelStationCard from './FuelStationCard';
 import fuelStationIcon from '../images/fuelstation.png'
@@ -61,7 +61,7 @@ function MapContainer({
         filter: isBlurred ? 'blur(5px)' : 'none',
     };
 
-    const renderMarkers = () => {
+    const renderMarkers = useMemo(() => {
         const markers = [];
 
         if (Array.isArray(stations)) {
@@ -107,10 +107,10 @@ function MapContainer({
         }
 
         return markers;
-    };
+    }, [stations, userLocation, compareStations]);
 
 
-    const renderCircle = () => {
+    const renderCircle = useMemo(() => {
         if (userLocation) {
             console.log("Rendering circle with userLocation and radius:", userLocation, radius);
             const circleOptions = {
@@ -125,7 +125,7 @@ function MapContainer({
         } else {
             return null;
         }
-    };
+    }, [userLocation, radius]);
 
     const renderInfoWindow = () => {
         if (selectedStation) {
@@ -167,8 +167,8 @@ function MapContainer({
 
     return (
         <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle} onLoad={onMapLoad}>
-            {renderMarkers()}
-            {renderCircle()}
+            {renderMarkers}
+            {renderCircle}
             {renderInfoWindow()}
             {renderDirections()}
         </GoogleMap>
