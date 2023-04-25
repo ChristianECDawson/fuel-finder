@@ -1,4 +1,3 @@
-// src/components/LandingPage.js
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import logo from '../images/logo.png'
@@ -20,11 +19,11 @@ const LandingPage = ({ onLocationConfirm }) => {
 
     const logoStyle = {
         width: '1500px',
-        marginTop: '-250px', // Reduce the marginBottom to reduce space between logo and text
+        marginTop: '-250px',
     };
 
     const titleStyle = {
-        marginTop: '-250px', // Remove any margin from the top of the Typography element
+        marginTop: '-250px',
     };
 
     return (

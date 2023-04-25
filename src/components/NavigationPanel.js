@@ -40,12 +40,9 @@ const useStyles = makeStyles({
 const NavigationPanel = ({
     userLocation,
     defaultCenter,
-    onLocationChange,
-    onRadiusChange,
     onSearchUpdate,
     stations,
     destination,
-    setStations,
     onDirectionsClick,
     onClearDirectionsClick,
     isBlurred,
@@ -220,10 +217,7 @@ const NavigationPanel = ({
                     <Divider />
                     {!isBlurred && (
                         <StationList
-                            location={locationCoords}
-                            radius={radius}
                             stations={sortStations(stations, locationCoords, sortBy)}
-                            setStations={setStations}
                             onDirectionsClick={onDirectionsClick}
                             compareStations={compareStations}
                             setCompareStations={setCompareStations}

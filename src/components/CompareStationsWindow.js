@@ -53,7 +53,7 @@ const CompareStationsWindow = ({ compareStations }) => {
     };
 
     const efficiency = calculateFuelEfficiency(compareStations[0], compareStations[1], fuelEconomy);
-    const { gas: gasEfficiency, diesel: dieselEfficiency, journeyCost } = efficiency;
+    const { journeyCost } = efficiency;
 
     return (
         <Draggable>

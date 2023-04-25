@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
-import Draggable from 'react-draggable';
 import FuelStationCard from './FuelStationCard';
 import fuelStationIcon from '../images/fuelstation.png'
 import userLocationIcon from '../images/userlocation.png'
@@ -10,7 +9,6 @@ function MapContainer({
     userLocation,
     radius,
     stations,
-    setStations,
     destination,
     onDirectionsClick,
     isBlurred,
@@ -22,12 +20,10 @@ function MapContainer({
     const [directionsServiceRef, setDirectionsServiceRef] = useState(null);
     const [mapRef, setMapRef] = useState(null);
 
-    // Add the onMapLoad function to store the map reference
     const onMapLoad = useCallback((map) => {
         setMapRef(map);
     }, []);
 
-    // Add the useEffect hook that resets the zoom when zoomResetKey changes
     useEffect(() => {
         if (mapRef) {
             mapRef.setZoom(13);
@@ -70,7 +66,6 @@ function MapContainer({
 
         if (Array.isArray(stations)) {
             stations.forEach((station) => {
-                // Check if the station is in the compareStations array
                 const isSelected = compareStations.some(
                     (compareStation) => compareStation.place_id === station.place_id
                 );
@@ -141,7 +136,7 @@ function MapContainer({
                         lng: selectedStation.geometry.location.lng,
                     }}
                     options={{
-                        pixelOffset: new window.google.maps.Size(0, -48), // This moves the InfoWindow up by 32 pixels.
+                        pixelOffset: new window.google.maps.Size(0, -48),
                     }}
                     onCloseClick={() => {
                         setSelectedStation(null);

@@ -1,9 +1,8 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import { useJsApiLoader } from '@react-google-maps/api';
 import MapContainer from './components/MapContainer';
 import NavigationPanel from './components/NavigationPanel';
-import { fetchNearbyFuelStations, geocodeAddress } from './api';
+import { fetchNearbyFuelStations } from './api';
 import LandingPage from './components/LandingPage';
 
 const googleMapsLibraries = ['places'];
@@ -17,7 +16,7 @@ export default function Home() {
   const defaultCenter = {
     lat: 51.504171,
     lng: -2.549914,
-  }; // You can change the coordinates to the desired default location
+  };
 
   const [userLocation, setUserLocation] = useState(defaultCenter);
   const [radius, setRadius] = useState(5000);
@@ -123,7 +122,6 @@ export default function Home() {
         onSearchUpdate={handleSearchUpdate}
         stations={stations}
         destination={destination}
-        setStations={setStations}
         onDirectionsClick={onDirectionsClick}
         onClearDirectionsClick={onClearDirectionsClick}
         isBlurred={!locationConfirmed}
@@ -136,7 +134,6 @@ export default function Home() {
           userLocation={userLocation}
           radius={radius}
           stations={stations}
-          setStations={setStations}
           destination={destination}
           onDirectionsClick={onDirectionsClick}
           isBlurred={!locationConfirmed}

@@ -1,8 +1,7 @@
 import React from 'react';
 import FuelStationCard from './FuelStationCard';
-import CompareStationsWindow from './CompareStationsWindow';
 
-const StationList = ({ location, radius, stations, setStations, onDirectionsClick, compareStations, setCompareStations }) => {
+const StationList = ({ stations, onDirectionsClick, compareStations, setCompareStations }) => {
 
     const sortedStations = () => {
         return [...stations].sort((a, b) => {

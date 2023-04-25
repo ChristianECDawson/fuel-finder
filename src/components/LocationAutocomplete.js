@@ -29,13 +29,11 @@ const LocationAutocomplete = ({ location, handleLocationChange, setLocationCoord
                 input: input,
                 types: ['geocode'],
                 componentRestrictions: { country: 'GB' },
-                // Optional: you can include a LatLngBounds object to restrict the search area
-                // bounds: ...
             },
             (predictions, status) => {
                 if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
                     console.error('AutocompleteService status:', status);
-                    setPredictions([]); // Clear the predictions if there's an error
+                    setPredictions([]);
                     return;
                 }
 
