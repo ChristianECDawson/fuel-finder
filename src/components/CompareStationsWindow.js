@@ -107,7 +107,7 @@ const CompareStationsWindow = ({ compareStations }) => {
                                             : getArrow(station.dieselPrice, compareStations[0].dieselPrice)}
                                     </Typography>
                                     <Typography variant="body1">
-                                        Distance: {station.distance} km{' '}
+                                        Drive Distance: {station.distance} km{' '}
                                         {index === 0
                                             ? getArrow(station.distance, compareStations[1].distance)
                                             : getArrow(station.distance, compareStations[0].distance)}
