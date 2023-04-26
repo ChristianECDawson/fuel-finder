@@ -12,7 +12,7 @@ function MapContainer({
     destination,
     onDirectionsClick,
     isBlurred,
-    compareStations,
+    compareStations = [],
     setCompareStations,
     zoomResetKey,
 }) {
@@ -61,7 +61,7 @@ function MapContainer({
         filter: isBlurred ? 'blur(5px)' : 'none',
     };
 
-    const renderMarkers = useMemo(() => {
+    function renderMarkers() {
         const markers = [];
 
         if (Array.isArray(stations)) {
@@ -107,7 +107,7 @@ function MapContainer({
         }
 
         return markers;
-    }, [stations, userLocation, compareStations]);
+    };
 
 
     const renderCircle = useMemo(() => {
@@ -167,7 +167,7 @@ function MapContainer({
 
     return (
         <GoogleMap zoom={13} center={userLocation} mapContainerStyle={mapContainerStyle} onLoad={onMapLoad}>
-            {renderMarkers}
+            {renderMarkers()}
             {renderCircle}
             {renderInfoWindow()}
             {renderDirections()}

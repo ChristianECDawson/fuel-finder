@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-function isLocationApproximatelyEqual(location1, location2, threshold = 0.0005) {
+export function isLocationApproximatelyEqual(location1, location2, threshold = 0.0005) {
     const latDiff = Math.abs(location1.lat - location2.lat);
     const lngDiff = Math.abs(location1.lng - location2.lng);
     return latDiff <= threshold && lngDiff <= threshold;
