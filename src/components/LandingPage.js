@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import logo from '../images/logo.png'
 
-const LandingPage = ({ onLocationConfirm }) => {
+const LandingPage = () => {
     const containerStyle = {
         position: 'absolute',
         top: 0,

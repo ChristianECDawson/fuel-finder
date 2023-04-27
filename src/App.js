@@ -31,11 +31,6 @@ export default function Home() {
     position: 'relative',
   };
 
-  const handleLocationConfirm = (location) => {
-    setUserLocation(location);
-    setLocationConfirmed(true);
-  };
-
   const onDirectionsClick = (location) => {
     setDestination(location);
     setShowingDirections(true);
@@ -142,7 +137,7 @@ export default function Home() {
           zoomResetKey={zoomResetKey}
         />
         {!locationConfirmed && (
-          <LandingPage onLocationConfirm={handleLocationConfirm} />
+          <LandingPage />
         )}
       </div>
     </>

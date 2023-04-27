@@ -27,8 +27,9 @@ function MapContainer({
     useEffect(() => {
         if (mapRef) {
             mapRef.setZoom(13);
+            mapRef.panTo(userLocation);
         }
-    }, [zoomResetKey, mapRef]);
+    }, [zoomResetKey, mapRef, userLocation]);
 
 
     useEffect(() => {
