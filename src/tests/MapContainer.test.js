@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { GoogleMapProvider } from '@react-google-maps/api';
 import MapContainer from '../components/MapContainer';
@@ -23,9 +23,9 @@ window.google = {
 };
 
 jest.mock('@react-google-maps/api', () => ({
-    GoogleMap: jest.fn(({ children }) => <div>{children}</div>),
+    GoogleMap: jest.fn(({ children }) => <div>{Array.isArray(children) ? children : [children]}</div>),
     Marker: jest.fn((props) => (
-        <div data-testid="fuelstation">{props.children}</div>
+        <div data-testid="fuelstation"></div>
     )),
     Circle: jest.fn(),
     InfoWindow: jest.fn(),
@@ -65,15 +65,13 @@ describe('MapContainer', () => {
             },
         ];
 
-        const { queryAllByTestId } = render(
-            <GoogleMapProvider>
-                <MapContainer userLocation={userLocation} stations={stations} />
-            </GoogleMapProvider>
+        const { findAllByTestId } = render(
+            <MapContainer userLocation={userLocation} stations={stations} />
         );
 
-        const fuelStations = await queryAllByTestId('fuelstation');
-        expect(fuelStations.length).toBe(2);
+        await waitFor(async () => {
+            const fuelStations = await findAllByTestId('fuelstation');
+            expect(fuelStations.length).toBe(2);
+        });
     });
-
-    // Write other tests following the same pattern
 });

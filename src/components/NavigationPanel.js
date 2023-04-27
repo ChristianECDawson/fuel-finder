@@ -126,7 +126,7 @@ const NavigationPanel = ({
                     <Typography variant="h6">Fuel Station Finder</Typography>
                 </Toolbar>
             </AppBar>
-            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)} data-testid="navigation-drawer">
                 <Box className={classes.drawer} role="presentation">
                     <Box m={2}>
                         <Grid container spacing={2}>
