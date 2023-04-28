@@ -60,7 +60,8 @@ const NavigationPanel = ({
     const [currentSearch, setCurrentSearch] = useState({ locationCoords: null, radius: null });
 
     const handleOpenInGoogleMaps = () => {
-        const url = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},${userLocation.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`;
+        const url = `https://www.google.com/maps/dir/?api=1&origin=${userLocation.lat},
+                    ${userLocation.lng}&destination=${destination.lat},${destination.lng}&travelmode=driving`;
         window.open(url, '_blank');
     };
 

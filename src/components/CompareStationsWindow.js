@@ -55,6 +55,12 @@ const CompareStationsWindow = ({ compareStations }) => {
     const efficiency = calculateFuelEfficiency(compareStations[0], compareStations[1], fuelEconomy);
     const { journeyCost } = efficiency;
 
+    const renderEfficiencyDetails = (type, cost, index) => (
+        <Typography variant="body1" style={{ color: efficiency[type] === index.toString() ? 'green' : 'red', fontWeight: 'bold' }}>
+            {efficiency[type] === index.toString() ? 'More Efficient' : ''} ({type === 'gas' ? 'Petrol' : 'Diesel'} - £{cost.toFixed(2)})
+        </Typography>
+    );
+
     return (
         <Draggable>
             <Paper className={classes.window}>
@@ -64,53 +70,27 @@ const CompareStationsWindow = ({ compareStations }) => {
                             <Card
                                 className={classes.card}
                                 style={{
-                                    border:
-                                        efficiency.gas === index.toString() || efficiency.diesel === index.toString()
-                                            ? "2px solid green"
-                                            : efficiency.gas !== index.toString() && efficiency.diesel !== index.toString()
-                                                ? "2px solid red"
-                                                : "",
+                                    border: [efficiency.gas, efficiency.diesel].includes(index.toString())
+                                        ? '2px solid green'
+                                        : '2px solid red',
                                 }}
                             >
                                 <CardContent>
-                                    {efficiency.gas === index.toString() && (
-                                        <Typography variant="body1" style={{ color: "green", fontWeight: "bold" }}>
-                                            More Efficient (Petrol - £{journeyCost(station, 'gas').toFixed(2)})
-                                        </Typography>
-                                    )}
-                                    {efficiency.diesel === index.toString() && (
-                                        <Typography variant="body1" style={{ color: "green", fontWeight: "bold" }}>
-                                            More Efficient (Diesel - £{journeyCost(station, 'diesel').toFixed(2)})
-                                        </Typography>
-                                    )}
-                                    {efficiency.gas !== index.toString() && efficiency.diesel !== index.toString() && (
-                                        <>
-                                            <Typography variant="body1" style={{ color: "red", fontWeight: "bold" }}>
-                                                (Petrol - £{journeyCost(station, 'gas').toFixed(2)})
-                                            </Typography>
-                                            <Typography variant="body1" style={{ color: "red", fontWeight: "bold" }}>
-                                                (Diesel - £{journeyCost(station, 'diesel').toFixed(2)})
-                                            </Typography>
-                                        </>
-                                    )}
+                                    {renderEfficiencyDetails('gas', journeyCost(station, 'gas'), index)}
+                                    {renderEfficiencyDetails('diesel', journeyCost(station, 'diesel'), index)}
+
                                     <Typography variant="h6">{station.name}</Typography>
                                     <Typography variant="body1">
                                         Unleaded: £{station.gasPrice.toFixed(2)} /L{' '}
-                                        {index === 0
-                                            ? getArrow(station.gasPrice, compareStations[1].gasPrice)
-                                            : getArrow(station.gasPrice, compareStations[0].gasPrice)}
+                                        {getArrow(station.gasPrice, compareStations[1 - index].gasPrice)}
                                     </Typography>
                                     <Typography variant="body1">
                                         Diesel: £{station.dieselPrice.toFixed(2)} /L{' '}
-                                        {index === 0
-                                            ? getArrow(station.dieselPrice, compareStations[1].dieselPrice)
-                                            : getArrow(station.dieselPrice, compareStations[0].dieselPrice)}
+                                        {getArrow(station.dieselPrice, compareStations[1 - index].dieselPrice)}
                                     </Typography>
                                     <Typography variant="body1">
                                         Drive Distance: {station.distance} km{' '}
-                                        {index === 0
-                                            ? getArrow(station.distance, compareStations[1].distance)
-                                            : getArrow(station.distance, compareStations[0].distance)}
+                                        {getArrow(station.distance, compareStations[1 - index].distance)}
                                     </Typography>
                                 </CardContent>
                             </Card>

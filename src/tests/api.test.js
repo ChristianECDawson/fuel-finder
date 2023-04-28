@@ -8,7 +8,6 @@ describe('API', () => {
         axios.get.mockReset();
     });
 
-    // Add test for isLocationApproximatelyEqual
     describe('isLocationApproximatelyEqual', () => {
         it('returns true if locations are approximately equal within the threshold', () => {
             const location1 = { lat: 51.504171, lng: -2.549914 };
@@ -27,7 +26,6 @@ describe('API', () => {
         });
     });
 
-    // Add test for geocodeAddress
     describe('geocodeAddress', () => {
         it('geocodes address successfully', async () => {
             const mockResponse = {
@@ -90,7 +88,7 @@ describe('API', () => {
         expect(axios.get).toHaveBeenCalledWith(
             '/api/fuelstations?lat=51.504171&lng=-2.549914&radius=5000'
         );
-        expect(result).toEqual({ results: mockResponse.data.results }); // Change this line
+        expect(result).toEqual({ results: mockResponse.data.results });
     });
 
     it('handles errors when fetching nearby fuel stations', async () => {
