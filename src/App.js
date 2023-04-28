@@ -87,7 +87,7 @@ export default function Home() {
                     dieselPrice: parseFloat(
                       (Math.random() * (1.73 - 1.63) + 1.63).toFixed(2)
                     ),
-                    distance: drivingDistanceInKm, // Distance in kilometers
+                    distance: drivingDistanceInKm,
                   });
                 }
 
